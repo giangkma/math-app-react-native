@@ -1,4 +1,4 @@
-import { API_QUESTION, API_RANK } from "../untils/constants";
+import { API_QUESTION, API_RANK, API_USER } from "../untils/constants";
 import { Get, Post, Put } from "./HTTPService";
 
 export const APIfetchQuestions = async (id) => {
@@ -34,5 +34,23 @@ export const APIupdateRankUser = async (data, id) => {
 export const APIpostRankUser = async (data) => {
     const url = API_RANK;
     const res = await Post({ url, data });
+    return res;
+};
+
+export const APIfetchUsers = async () => {
+    const url = API_USER;
+    const res = await Get({ url });
+    return res;
+};
+
+export const APIUploadUser = async (data) => {
+    const url = API_USER;
+    const res = await Post({ url, data });
+    return res;
+};
+
+export const APIupdateUser = async (data, id) => {
+    const url = `${API_USER}/${id}`;
+    const res = await Put({ url, data });
     return res;
 };

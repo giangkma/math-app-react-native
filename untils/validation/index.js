@@ -1,22 +1,51 @@
-export const validationLogin = (username, password) => {
-    const errors = {};
-    if (!username) {
-        errors.username = "Hãy nhập tài khoản";
-    } else if (typeof username === "undefined") {
-        errors.username = "Tài khoản không hợp lệ";
-    }
-    // ==============================PASSWORD================================
-    if (!password) {
-        errors.password = "Hãy nhập mật khẩu";
-    } else if (
-        typeof password === "undefined" ||
-        password.split(" ").length > 1
-    ) {
-        errors.password = "Mật khẩu không hợp lệ";
-    }
+import * as yup from "yup";
 
-    return errors;
-};
+export const AccountSchema = yup.object().shape({
+    password: yup
+        .string()
+        .required("Hãy nhập mật khẩu cũ")
+        .min(5, "Mật khẩu phải lớn hơn 5 ký tự"),
+    newPassword: yup
+        .string()
+        .required("Hãy nhập mật khẩu mới")
+        .min(5, "Mật khẩu phải lớn hơn 5 ký tự"),
+    reNewPassword: yup
+        .string()
+        .required("Hãy nhập lại mật khẩu mới")
+        .min(5, "Mật khẩu phải lớn hơn 5 ký tự")
+        .oneOf([yup.ref("newPassword"), null], "Mật khẩu mới không trùng nhau"),
+});
+
+export const LoginSchema = yup.object().shape({
+    username: yup
+        .string()
+        .required("Hãy nhập tài khoản")
+        .min(5, "Tài khoản phải lớn hơn 5 ký tự"),
+    password: yup
+        .string()
+        .required("Hãy nhập mật khẩu")
+        .min(5, "Mật khẩu phải lớn hơn 5 ký tự"),
+});
+
+export const SignupSchema = yup.object().shape({
+    fullName: yup
+        .string()
+        .required("Hãy nhập họ và tên")
+        .min(5, "Họ và tên phải lớn hơn 5 ký tự"),
+    username: yup
+        .string()
+        .required("Hãy nhập tài khoản")
+        .min(5, "Tài khoản phải lớn hơn 5 ký tự"),
+    password: yup
+        .string()
+        .required("Hãy nhập mật khẩu")
+        .min(5, "Mật khẩu phải lớn hơn 5 ký tự"),
+    confirmPassword: yup
+        .string()
+        .required("Hãy nhập mật khẩu")
+        .min(5, "Mật khẩu phải lớn hơn 5 ký tự")
+        .oneOf([yup.ref("password"), null], "Mật khẩu không trùng nhau"),
+});
 
 export const validationFormQuestion = (title, correctAnswer, classQuestion) => {
     const errors = {};

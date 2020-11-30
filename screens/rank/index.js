@@ -1,11 +1,10 @@
 /* eslint-disable react/jsx-no-literals */
+import { Picker } from "native-base";
 import * as React from "react";
-import { Image, StyleSheet, ScrollView, Text, View } from "react-native";
-import Background from "../../assets/bg.jpg";
+import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import * as Animatable from "react-native-animatable";
+import { useTheme } from "react-native-paper";
 import ImageNodata from "../../assets/noDataFound.png";
-import ButtonComponent from "../../commons/button";
-import HeaderComponent from "../../commons/header";
-import { buttonsHome } from "../../untils/dummy";
 import { filterForDuplicateValues } from "../../untils/functions";
 import { commonStyles } from "../../untils/styles/global";
 
@@ -17,21 +16,14 @@ const RankComponent = ({
     selectClassRanks,
     onUpdateDataRank,
 }) => {
+    const { colors } = useTheme();
     return (
         <>
-            <HeaderComponent
-                navigation={navigation}
-                backHome={backHome}
-                onUpdateDataRank={onUpdateDataRank}
-                hideNumQuestions
-                showButtonUpdateRank
-            />
-            <View style={styles.imageContainer}>
-                <Image
-                    resizeMode="cover"
-                    source={Background}
-                    style={styles.image}
-                />
+            <Animatable.View
+                style={styles.imageContainer}
+                animation="slideInUp"
+                easing="ease-out"
+            >
                 <View style={commonStyles.ContainerContent}>
                     <ScrollView
                         style={{}}
@@ -39,74 +31,104 @@ const RankComponent = ({
                             paddingBottom: 30,
                         }}
                     >
-                        <Text
+                        <View
                             style={{
-                                color: "#fff",
-                                textAlign: "center",
-                                fontSize: 25,
-                                marginTop: 20,
+                                padding: 10,
                             }}
                         >
-                            Bảng xếp hạng
-                        </Text>
+                            <Text
+                                style={{
+                                    color: colors.text,
+                                    textAlign: "center",
+                                    fontSize: 25,
+                                }}
+                            >
+                                Bảng xếp hạng
+                            </Text>
+                        </View>
                         <View
                             style={{
                                 display: "flex",
                                 flexDirection: "row",
                                 alignItems: "center",
-                                justifyContent: "space-around",
                                 marginTop: 10,
                                 marginBottom: 5,
+                                paddingLeft: 20,
+                                paddingRight: 20,
                             }}
                         >
-                            <View>
-                                <ButtonComponent
-                                    title="Tất cả"
-                                    onPress={() => selectClassRanks(0)}
-                                    buttonStyle={{
-                                        backgroundColor:
-                                            nameClassRanks === 0
-                                                ? "#26de81"
-                                                : "#1B9CFC",
-                                    }}
-                                />
+                            <View style={{ marginRight: 10 }}>
+                                <Text
+                                    style={{ color: colors.text, fontSize: 16 }}
+                                >
+                                    {"Sắp xếp theo"}
+                                </Text>
                             </View>
-                            {/* {buttonsHome.map((item, index) => {
-                                return (
-                                    <View key={index}>
-                                        <ButtonComponent
-                                            title={item.title}
-                                            onPress={() =>
-                                                selectClassRanks(index + 1)
-                                            }
-                                            buttonStyle={{
-                                                backgroundColor:
-                                                    nameClassRanks === index + 1
-                                                        ? "#26de81"
-                                                        : "#1B9CFC",
-                                            }}
-                                        />
-                                    </View>
-                                );
-                            })} */}
+                            <View
+                                style={{
+                                    borderColor: colors.borderInputColor,
+                                    borderWidth: 2,
+                                    marginTop: 10,
+                                    marginBottom: 10,
+                                    flex: 1,
+                                }}
+                            >
+                                <Picker
+                                    style={{
+                                        height: 40,
+                                        color: colors.text,
+                                    }}
+                                    placeholderIconColor="red"
+                                    selectedValue={nameClassRanks}
+                                    onValueChange={(itemValue) =>
+                                        selectClassRanks(itemValue)
+                                    }
+                                >
+                                    <Picker.Item
+                                        label="Xếp hạng tổng hợp"
+                                        value={0}
+                                    />
+                                    <Picker.Item label="Lớp 1" value={1} />
+                                    <Picker.Item label="Lớp 2" value={2} />
+                                    <Picker.Item label="Lớp 3" value={3} />
+                                    <Picker.Item label="Lớp 4" value={4} />
+                                    <Picker.Item label="Lớp 5" value={5} />
+                                </Picker>
+                            </View>
                         </View>
                         <View style={styles.rowTable}>
-                            <Text style={styles.titleTable}>STT</Text>
+                            <Text
+                                style={{
+                                    ...styles.titleTable,
+                                    color: colors.text,
+                                }}
+                            >
+                                STT
+                            </Text>
                             <Text
                                 style={{
                                     ...styles.titleTable,
                                     ...styles.titleName,
+                                    color: colors.text,
                                 }}
                             >
                                 Tên
                             </Text>
                             {nameClassRanks !== 0 && (
-                                <Text style={styles.titleTable}>Lớp</Text>
+                                <Text
+                                    style={{
+                                        ...styles.titleTable,
+                                        color: colors.text,
+                                    }}
+                                >
+                                    Lớp
+                                </Text>
                             )}
                             <Text
                                 style={{
                                     ...styles.titleTable,
                                     flex: nameClassRanks === 0 ? 2 : 1,
+                                    color: colors.text,
                                 }}
                             >
                                 {nameClassRanks === 0 ? "Tổng điểm" : "Điểm"}
@@ -125,7 +147,7 @@ const RankComponent = ({
                                 />
                                 <Text
                                     style={{
-                                        color: "#fff",
+                                        color: colors.text,
                                         fontSize: 20,
                                         marginTop: 5,
                                     }}
@@ -172,7 +194,12 @@ const RankComponent = ({
                                                     ️🥉
                                                 </Text>
                                             ) : (
-                                                <Text style={styles.titleTable}>
+                                                <Text
+                                                    style={{
+                                                        ...styles.titleTable,
+                                                        color: colors.text,
+                                                    }}
+                                                >
                                                     {index + 1}
                                                 </Text>
                                             )}
@@ -180,18 +207,25 @@ const RankComponent = ({
                                                 style={{
                                                     ...styles.titleTable,
                                                     ...styles.titleName,
+                                                    color: colors.text,
                                                 }}
                                             >
                                                 {item.name}
                                             </Text>
                                             {nameClassRanks !== 0 && (
-                                                <Text style={styles.titleTable}>
+                                                <Text
+                                                    style={{
+                                                        ...styles.titleTable,
+                                                        color: colors.text,
+                                                    }}
+                                                >
                                                     {item.class}
                                                 </Text>
                                             )}
                                             <Text
                                                 style={{
                                                     ...styles.titleTable,
+                                                    color: colors.text,
                                                     flex:
                                                         nameClassRanks === 0
                                                             ? 2
@@ -207,16 +241,11 @@ const RankComponent = ({
                         )}
                     </ScrollView>
                 </View>
-            </View>
+            </Animatable.View>
         </>
     );
 };
 const styles = StyleSheet.create({
-    image: {
-        flex: 1,
-        height: null,
-        width: null,
-    },
     titleTable: {
         color: "#fff",
         fontSize: 18,
@@ -236,7 +265,7 @@ const styles = StyleSheet.create({
     imageContainer: {
         bottom: 0,
         position: "absolute",
-        top: 80,
+        top: 0,
         width: "100%",
     },
 

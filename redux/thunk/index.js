@@ -17,21 +17,55 @@ import {
     APIuploadQuestion,
     APIupdateRankUser,
     APIpostRankUser,
+    APIfetchUsers,
+    APIupdateUser
 } from "../../apis";
 import { STATUS_CODE } from "../../untils/constants";
 
 export const loginThunk = (username, password) => {
     return async (dispatch) => {
         dispatch(actionShowLoading());
-        if ((username === "admin", password === "admin")) {
-            await dispatch(actionSetToken("accessToken"));
-            showAlert("Đăng nhập thành công !");
-            dispatch(actionHideLoading());
-            return true;
+        const res = await APIfetchUsers();
+        const { status, data } = res;
+        if (status === STATUS_CODE.SUCCESS) {
+            const user = await data.find(
+                (user) =>
+                    user.username === username && user.password === password
+            );
+            if (user) {
+                setTimeout(async () => {
+                    await dispatch(actionSetUser(user));
+                    if ((username === "admin")) {
+                        await dispatch(actionSetToken("admin"));
+                    } else {
+                        await dispatch(actionSetToken("user"));
+                    }
+                    dispatch(actionHideLoading());
+                    showAlert("Đăng nhập thành công !");
+                    return true;
+                }, 2000);
+            } else {
+                setTimeout(() => {
+                    dispatch(actionHideLoading());
+                    showAlert("Tài khoản hoặc mật khẩu không chính xác !");
+                    return false;
+                }, 2000);
+            }
         }
-        dispatch(actionHideLoading());
-        showAlert("Tài khoản hoặc mật khẩu không chính xác !");
-        return false;
+    };
+};
+
+export const fetchInformationUserThunk = () => {
+    return async (dispatch, getState) => {
+        const user = await getState().user;
+        const res = await APIfetchUsers();
+        const { status, data } = res;
+        if (status === STATUS_CODE.SUCCESS) {
+            const newInforUser = data.find((item) => item.id === user.id);
+            dispatch(actionSetUser(newInforUser));
+        } else {
+            showAlert("Lấy dữ liệu người dùng thất bại !");
+        }
     };
 };
 
@@ -117,20 +151,20 @@ export const fetchRanksThunk = () => {
     };
 };
 
-export const checkInformationThunk = (nameUser, passwordUser) => {
+export const checkInformationThunk = (fullName, password) => {
     return async (dispatch, getState) => {
         dispatch(actionShowLoading());
         const ranks = await getState().ranks;
         let userAlreadyExists = null;
         let userDuplicateName = null;
         await ranks.map((item) => {
-            if (item.name === nameUser && item.password === passwordUser) {
+            if (item.name === fullName && item.password === password) {
                 //trường hợp trùng tên || ng dùng nhập sai pass
                 userAlreadyExists = item;
                 return false;
             } else if (
-                item.name === nameUser &&
-                item.password !== passwordUser
+                item.name === fullName &&
+                item.password !== password
             ) {
                 //trường hợp trùng tên || ng dùng nhập sai pass
                 userDuplicateName = item;
@@ -140,23 +174,23 @@ export const checkInformationThunk = (nameUser, passwordUser) => {
         dispatch(actionHideLoading());
         if (userAlreadyExists) {
             //Người dùng đã tồn tại
-            dispatch(actionSetUser({ nameUser, passwordUser }));
+            dispatch(actionSetUser({ fullName, password }));
             return true;
         } else if (userDuplicateName) {
             //Tên đã tồn tại, sai mật khẩu
             return false;
         } else {
             //chưa có dữ liệu user trong database
-            dispatch(actionSetUser({ nameUser, passwordUser }));
+            dispatch(actionSetUser({ fullName, password }));
             return true;
         }
     };
 };
 
 export const updateRanksThunk = (
-    nameUser,
-    passwordUser,
-    classNameUser,
+    fullName,
+    password,
+    classUser,
     scoreUser
 ) => {
     return async (dispatch, getState) => {
@@ -164,9 +198,9 @@ export const updateRanksThunk = (
         const ranks = await getState().ranks;
         const user = ranks.find(
             (item) =>
-                item.name === nameUser &&
-                item.password === passwordUser &&
-                item.class === classNameUser
+                item.name === fullName &&
+                item.password === password &&
+                item.class === classUser
         );
         if (user) {
             //tìm thấy user trong Ranks => update score cho user
@@ -186,10 +220,10 @@ export const updateRanksThunk = (
         } else {
             //không tìm thấy => post score cho user
             const res = await APIpostRankUser({
-                name: nameUser,
-                password: passwordUser,
+                name: fullName,
+                password: password,
                 score: scoreUser,
-                class: classNameUser,
+                class: classUser,
             });
             const { status, data } = res;
             dispatch(actionHideLoading());
@@ -201,6 +235,24 @@ export const updateRanksThunk = (
                 showAlert("Đã xảy ra lỗi !");
                 return false;
             }
+        }
+    };
+};
+
+export const updateInformationUserThunk = (user, id) => {
+    return async (dispatch, getState) => {
+        dispatch(actionShowLoading());
+        const res = await APIupdateUser(user, id);
+        const { status, data } = res;
+        if (status === STATUS_CODE.SUCCESS) {
+            showAlert("Thay đổi mật khẩu thành công !");
+            dispatch(actionSetUser(data));
+            dispatch(actionHideLoading());
+            return true;
+        } else {
+            dispatch(actionHideLoading());
+            showAlert("Đã xảy ra lỗi !");
+            return false;
         }
     };
 };

@@ -1,32 +1,17 @@
 import * as React from "react";
-import { Button } from "react-native-elements";
-import Icon from "react-native-vector-icons/FontAwesome";
+import { Text } from "react-native";
+import { Button } from "react-native-paper";
 
-const ButtonComponent = ({
-    title,
-    onPress,
-    buttonStyle,
-    titleStyle,
-    iconName,
-    iconStyle,
-    iconColor,
-    iconSize,
-}) => {
+const ButtonComponent = ({ title, onPress, buttonStyle, titleStyle, icon }) => {
     return (
         <Button
-            title={title}
+            icon={icon}
+            mode="contained"
             onPress={onPress}
-            buttonStyle={buttonStyle}
-            titleStyle={titleStyle}
-            icon={
-                <Icon
-                    name={iconName}
-                    size={iconSize || 17}
-                    color={iconColor || "white"}
-                    style={iconStyle}
-                />
-            }
-        />
+            style={buttonStyle}
+        >
+            <Text style={{ ...titleStyle, color: "#fff" }}>{title}</Text>
+        </Button>
     );
 };
 export default ButtonComponent;

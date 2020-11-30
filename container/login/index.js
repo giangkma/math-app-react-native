@@ -1,10 +1,17 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import * as React from "react";
-import { useDispatch } from "react-redux";
-import LoginComponent from "../../screens/login";
+import { useForm } from "react-hook-form";
+import { useTheme } from "react-native-paper";
+import { useDispatch, useSelector } from "react-redux";
+import { actionTogleTheme } from "../../redux/actions";
 import { loginThunk } from "../../redux/thunk";
-import { validationLogin } from "../../untils/validation";
+import LoginComponent from "../../screens/login";
+import { validationLogin, LoginSchema } from "../../untils/validation";
 // connect redux
 const useConnect = () => {
+    const mapState = {
+        // isDarkTheme: useSelector((state) => state.isDarkTheme),
+    };
     const dispatch = useDispatch();
     const mapDispatch = React.useMemo(
         () => ({
@@ -15,38 +22,40 @@ const useConnect = () => {
     );
 
     return {
+        ...mapState,
         ...mapDispatch,
     };
 };
 const LoginContainer = ({ navigation }) => {
-    const { onLoginThunk } = useConnect();
-    const [username, setUsername] = React.useState(null);
-    const [password, setPassword] = React.useState(null);
-    const [errors, setErrors] = React.useState(null);
+    const { register, handleSubmit, control, errors } = useForm({
+        resolver: yupResolver(LoginSchema),
+    });
 
-    const onSubmit = () => {
-        const err = validationLogin(username, password);
-        if (err.username || err.password) {
-            setErrors(err);
-        } else {
-            setErrors(null);
-            setTimeout(async () => {
-                const res = await onLoginThunk(username, password);
-                if (res) {
-                    navigation.navigate("Trang chủ");
-                }
-            }, 2000);
+    const { colors } = useTheme();
+    const { onLoginThunk } = useConnect();
+    const [isShowPassword, setIsShowPassword] = React.useState(false);
+
+    const handleShowPassword = () => {
+        setIsShowPassword(!isShowPassword);
+    };
+    const onSubmit = async (data) => {
+        const { username, password } = data;
+        const res = await onLoginThunk(username, password);
+        if (res) {
+            navigation.navigate("Home");
         }
     };
     return (
         <LoginComponent
-            username={username}
-            password={password}
-            setUsername={setUsername}
-            setPassword={setPassword}
+            navigation={navigation}
+            colors={colors}
+            handleShowPassword={handleShowPassword}
+            isShowPassword={isShowPassword}
+            register={register}
+            handleSubmit={handleSubmit}
+            control={control}
             errors={errors}
             onSubmit={onSubmit}
-            navigation={navigation}
         />
     );
 };

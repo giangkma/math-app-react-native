@@ -1,8 +1,19 @@
-import { registerRootComponent } from 'expo';
+import { registerRootComponent } from "expo";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import Loading from "./commons/loading";
+import configStore from "./redux/configStore";
+import * as React from "react";
+import App from "./App";
 
-import App from './App';
-
-// registerRootComponent calls AppRegistry.registerComponent('main', () => App);
-// It also ensures that whether you load the app in the Expo client or in a native build,
-// the environment is set up appropriately
-registerRootComponent(App);
+const rootApp = () => {
+    return (
+        <Provider store={store}>
+            <PersistGate loading={<Loading />} persistor={persistor}>
+                <App />
+            </PersistGate>
+        </Provider>
+    );
+};
+const { store, persistor } = configStore();
+registerRootComponent(rootApp);

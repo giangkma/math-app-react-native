@@ -2,6 +2,8 @@ export const API_QUESTION =
     "https://5fb869c12f145f0016c3c588.mockapi.io/glab/questions";
 export const API_RANK =
     "https://5fb869c12f145f0016c3c588.mockapi.io/glab/ranks";
+export const API_USER =
+    "https://5fb869c12f145f0016c3c588.mockapi.io/glab/users";
 
 export const STATUS_CODE = {
     SUCCESS: 200,

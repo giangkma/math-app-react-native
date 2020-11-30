@@ -101,3 +101,10 @@ export const actionHideLoading = () => {
         type: CONSTANTS.HIDE_LOADING,
     };
 };
+
+
+export const actionTogleTheme = () => {
+    return {
+        type: CONSTANTS.TOGLE_THEME,
+    };
+};

@@ -11,6 +11,20 @@ import backgroundImageClass10 from "../../assets/class10.jpg";
 import backgroundImageClass11 from "../../assets/class11.jpg";
 import backgroundImageClass12 from "../../assets/class12.jpg";
 
+export const arrayBackgroundClass = [
+    backgroundImageClass1,
+    backgroundImageClass2,
+    backgroundImageClass3,
+    backgroundImageClass4,
+    backgroundImageClass5,
+    backgroundImageClass6,
+    backgroundImageClass7,
+    backgroundImageClass8,
+    backgroundImageClass9,
+    backgroundImageClass10,
+    backgroundImageClass11,
+    backgroundImageClass12,
+];
 export const dataClassHomepage = [
     {
         title: "Khối tiểu học",

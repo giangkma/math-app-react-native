@@ -25,7 +25,8 @@ export const commonStyles = {
         justifyContent: "center",
     },
     buttonSubmit: {
-        padding: 10,
+        paddingTop: 3,
+        paddingBottom: 3,
         paddingLeft: 20,
         paddingRight: 20,
         backgroundColor: DEFAULT_COLOR,
@@ -36,4 +37,12 @@ export const commonStyles = {
         height: "100%",
         width: "100%",
     },
+    inputHomeStack: {
+        height: 50,
+        padding: 10,
+        borderWidth: 2,
+        marginTop: 10,
+        marginBottom: 5,
+        fontSize: 18,
+    }
 };

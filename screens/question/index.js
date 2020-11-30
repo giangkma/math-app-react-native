@@ -5,10 +5,10 @@ import ButtonComponent from "../../commons/button";
 import { commonStyles } from "../../untils/styles/global";
 import { Picker } from "native-base";
 import { DEFAULT_COLOR } from "../../untils/constants";
+import { useTheme } from "react-native-paper";
+import * as Animatable from "react-native-animatable";
+
 const QuestionComponent = ({
-    navigation,
-    backHome,
-    numQuestions,
     setTitle,
     setCorrectAnswer,
     onSubmitFormQuestion,
@@ -17,18 +17,19 @@ const QuestionComponent = ({
     correctAnswer,
     onSelectClassToAdd,
     classQuestion,
-    onChangeOptionPageQuestion,
-    optionPageQuestion,
+    toggleFormAddQuestion,
+    isAddQuestion,
     setIdQuestionEdit,
     onSearchQuestion,
 }) => {
+    const { colors } = useTheme();
     return (
-        <>
+        <Animatable.View animation="slideInUp" easing="ease-out">
             <View style={{ padding: 20, position: "relative" }}>
                 <View style={commonStyles.titlePage}>
                     <Text
                         style={{
-                            color: "#090B17",
+                            color: colors.text,
                             fontSize: 24,
                             fontWeight: "bold",
                         }}
@@ -51,35 +52,26 @@ const QuestionComponent = ({
                         style={{
                             height: "100%",
                             paddingBottom: 10,
-                            borderBottomWidth:
-                                optionPageQuestion === "add" ? 3 : 0,
+                            borderBottomWidth: isAddQuestion ? 3 : 0,
                             borderBottomColor: DEFAULT_COLOR,
                         }}
-                        onPress={() => {
-                            onChangeOptionPageQuestion("add");
-                        }}
+                        onPress={toggleFormAddQuestion}
                     >
                         <Text
                             style={{
                                 fontSize: 16,
-                                color:
-                                    optionPageQuestion === "add"
-                                        ? "#090B17"
-                                        : "#090B1750",
+                                color: colors.text,
                             }}
                         >
                             {"Thêm câu hỏi"}
                         </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        onPress={() => {
-                            onChangeOptionPageQuestion("edit");
-                        }}
+                        onPress={toggleFormAddQuestion}
                         style={{
                             height: "100%",
                             paddingBottom: 10,
-                            borderBottomWidth:
-                                optionPageQuestion === "edit" ? 3 : 0,
+                            borderBottomWidth: !isAddQuestion ? 3 : 0,
                             borderBottomColor: DEFAULT_COLOR,
                             marginLeft: 20,
                         }}
@@ -87,10 +79,7 @@ const QuestionComponent = ({
                         <Text
                             style={{
                                 fontSize: 16,
-                                color:
-                                    optionPageQuestion === "edit"
-                                        ? "#090B17"
-                                        : "#090B1750",
+                                color: colors.text,
                             }}
                         >
                             {"Chỉnh sửa câu hỏi"}
@@ -105,13 +94,13 @@ const QuestionComponent = ({
                         style={{
                             fontSize: 18,
                             fontWeight: "bold",
-                            color: "#090B17",
+                            color: colors.text,
                         }}
                     >
                         {"Thông tin câu hỏi"}
                     </Text>
                 </View>
-                {optionPageQuestion === "edit" && (
+                {!isAddQuestion && (
                     <>
                         <View
                             style={{
@@ -124,16 +113,22 @@ const QuestionComponent = ({
                         >
                             <Textarea
                                 containerStyle={{
-                                    ...styles.borderInput,
                                     width: "70%",
                                     height: 40,
                                     padding: 5,
+                                    borderWidth: 2,
+                                    borderColor: colors.borderInputColor,
                                 }}
-                                style={styles.textarea}
+                                style={{
+                                    ...styles.textaream,
+                                    color: colors.text,
+                                }}
                                 onChangeText={(text) => setIdQuestionEdit(text)}
                                 maxLength={10}
                                 placeholder={"ID câu hỏi : "}
-                                placeholderTextColor={"#00000050"}
+                                placeholderTextColor={
+                                    colors.placeholderTextColor
+                                }
                                 underlineColorAndroid={"transparent"}
                             />
                             <ButtonComponent
@@ -141,7 +136,7 @@ const QuestionComponent = ({
                                     backgroundColor: DEFAULT_COLOR,
                                     width: 100,
                                 }}
-                                titleStyle={{ fontSize: 18 }}
+                                titleStyle={{ fontSize: 13 }}
                                 title="Tìm kiếm"
                                 onPress={onSearchQuestion}
                             />
@@ -159,104 +154,120 @@ const QuestionComponent = ({
                         )}
                     </>
                 )}
-                {optionPageQuestion === "add" || title ? (
-                    <>
-                        <View
-                            style={{
-                                ...styles.borderInput,
-                                marginTop: 10,
-                                marginBottom: 10,
-                            }}
-                        >
-                            <Picker
-                                style={{ height: 40, color: "#00000050" }}
-                                selectedValue={classQuestion}
-                                onValueChange={(itemValue) =>
-                                    onSelectClassToAdd(itemValue)
-                                }
-                            >
-                                <Picker.Item label="Chọn lớp" value={0} />
-                                <Picker.Item label="Lớp 1" value={1} />
-                                <Picker.Item label="Lớp 2" value={2} />
-                                <Picker.Item label="Lớp 3" value={3} />
-                                <Picker.Item label="Lớp 4" value={4} />
-                                <Picker.Item label="Lớp 5" value={5} />
-                            </Picker>
-                        </View>
-                        {errors && errors.classQuestion && (
-                            <Text
+                {(title || isAddQuestion) && (
+                        <>
+                            <View
                                 style={{
-                                    ...styles.error_message,
-                                    marginTop: -10,
+                                    borderColor: colors.borderInputColor,
+                                    borderWidth: 2,
+                                    marginTop: 10,
                                     marginBottom: 10,
                                 }}
                             >
-                                {errors.classQuestion}
-                            </Text>
-                        )}
-                        <Textarea
-                            containerStyle={{
-                                ...styles.borderInput,
-                                ...styles.titleQuestion,
-                            }}
-                            style={styles.textarea}
-                            onChangeText={(text) => setTitle(text)}
-                            defaultValue={title}
-                            maxLength={100}
-                            placeholder={"Đề bài : "}
-                            placeholderTextColor={"#00000050"}
-                            underlineColorAndroid={"transparent"}
-                        />
-                        {errors && errors.title && (
-                            <Text style={styles.error_message}>
-                                {errors.title}
-                            </Text>
-                        )}
+                                <Picker
+                                    style={{
+                                        height: 40,
+                                        color: colors.text,
+                                    }}
+                                    selectedValue={classQuestion}
+                                    onValueChange={(itemValue) =>
+                                        onSelectClassToAdd(itemValue)
+                                    }
+                                >
+                                    <Picker.Item label="Chọn lớp" value={0} />
+                                    <Picker.Item label="Lớp 1" value={1} />
+                                    <Picker.Item label="Lớp 2" value={2} />
+                                    <Picker.Item label="Lớp 3" value={3} />
+                                    <Picker.Item label="Lớp 4" value={4} />
+                                    <Picker.Item label="Lớp 5" value={5} />
+                                </Picker>
+                            </View>
+                            {errors && errors.classQuestion && (
+                                <Text
+                                    style={{
+                                        ...styles.error_message,
+                                        marginTop: -10,
+                                        marginBottom: 10,
+                                    }}
+                                >
+                                    {errors.classQuestion}
+                                </Text>
+                            )}
+                            <Textarea
+                                containerStyle={{
+                                    borderColor: colors.borderInputColor,
+                                    borderWidth: 2,
+                                    ...styles.titleQuestion,
+                                }}
+                                style={{
+                                    ...styles.textarea,
+                                    color: colors.text,
+                                }}
+                                onChangeText={(text) => setTitle(text)}
+                                defaultValue={title}
+                                maxLength={100}
+                                placeholder={"Đề bài : "}
+                                placeholderTextColor={
+                                    colors.placeholderTextColor
+                                }
+                                underlineColorAndroid={"transparent"}
+                            />
+                            {errors && errors.title && (
+                                <Text style={styles.error_message}>
+                                    {errors.title}
+                                </Text>
+                            )}
 
-                        <Textarea
-                            containerStyle={{
-                                ...styles.correctAnswer,
-                                ...styles.borderInput,
-                            }}
-                            style={styles.textarea}
-                            onChangeText={(text) => setCorrectAnswer(text)}
-                            defaultValue={correctAnswer}
-                            maxLength={10}
-                            placeholder={"Đáp án : "}
-                            placeholderTextColor={"#00000050"}
-                            underlineColorAndroid={"transparent"}
-                        />
-                        {errors && errors.correctAnswer && (
-                            <Text style={styles.error_message}>
-                                {errors.correctAnswer}
-                            </Text>
-                        )}
-                    </>
-                ) : null}
+                            <Textarea
+                                containerStyle={{
+                                    ...styles.correctAnswer,
+                                    borderColor: colors.borderInputColor,
+                                    borderWidth: 2,
+                                }}
+                                style={{
+                                    ...styles.textarea,
+                                    color: colors.text,
+                                }}
+                                onChangeText={(text) => setCorrectAnswer(text)}
+                                defaultValue={correctAnswer}
+                                maxLength={10}
+                                placeholder={"Đáp án : "}
+                                placeholderTextColor={
+                                    colors.placeholderTextColor
+                                }
+                                underlineColorAndroid={"transparent"}
+                            />
+                            {errors && errors.correctAnswer && (
+                                <Text style={styles.error_message}>
+                                    {errors.correctAnswer}
+                                </Text>
+                            )}
+                        </>
+                    )}
                 <View>
-                    {optionPageQuestion === "add" && (
+                    {isAddQuestion && (
                         <View style={commonStyles.wrapButtonSubmit}>
                             <ButtonComponent
                                 buttonStyle={{
                                     ...commonStyles.buttonSubmit,
                                 }}
-                                titleStyle={{ fontSize: 18 }}
+                                titleStyle={{ fontSize: 14 }}
                                 title="Thêm câu hỏi"
                                 onPress={onSubmitFormQuestion}
                             />
                         </View>
                     )}
-                    {optionPageQuestion === "edit" && title && (
+                    {!isAddQuestion && title && (
                         <ButtonComponent
                             buttonStyle={commonStyles.buttonSubmit}
-                            titleStyle={{ fontSize: 18 }}
+                            titleStyle={{ fontSize: 14 }}
                             title="Lưu thay đổi"
                             onPress={onSubmitFormQuestion}
                         />
                     )}
                 </View>
             </View>
-        </>
+        </Animatable.View>
     );
 };
 const styles = StyleSheet.create({
@@ -266,18 +277,15 @@ const styles = StyleSheet.create({
         padding: 20,
         width: "100%",
         height: "100%",
-        backgroundColor: "#fff",
     },
     titleQuestion: {
         height: 130,
         width: "100%",
-        backgroundColor: "#fff",
         padding: 10,
     },
     correctAnswer: {
         marginTop: 10,
         height: 40,
-        backgroundColor: "#fff",
         padding: 5,
         paddingLeft: 10,
         marginBottom: 20,

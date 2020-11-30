@@ -23,15 +23,12 @@ const HeaderComponent = ({
             }}
         >
             <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
-                <Icon style={{ fontSize: 24 }} name="bars" />
+                <Icon style={{ fontSize: 24, color: "#fff" }} name="bars" />
             </TouchableOpacity>
             <View>
-                <Text style={{ color: "black", fontSize: 16 }}>
-                    {className
-                        ? `Số câu hỏi lớp ${className} đang có : ${numQuestions}`
-                        : `Tổng số câu hỏi đang có : ${numQuestions}`}
-                </Text>
+                <Text style={{ color: "#fff", fontSize: 22, marginRight: 15 }}>{"math"}</Text>
             </View>
+            <View></View>
         </View>
     );
 };

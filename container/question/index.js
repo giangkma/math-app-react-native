@@ -11,6 +11,7 @@ import {
     validationIdQuestion,
 } from "../../untils/validation";
 
+
 // connect redux
 const useConnect = () => {
     const dispatch = useDispatch();
@@ -40,7 +41,7 @@ const QuestionContainer = ({ navigation, backHome, numQuestions }) => {
     const [classQuestion, setClassQuestion] = useState(0);
 
     const [errors, setErrors] = React.useState(null);
-    const [optionPageQuestion, setOptionPageQuestion] = React.useState("add");
+    const [isAddQuestion, setIsAddQuestion] = React.useState(true);
     const [idQuestionEdit, setIdQuestionEdit] = React.useState(null);
 
     const onResetForm = () => {
@@ -49,8 +50,8 @@ const QuestionContainer = ({ navigation, backHome, numQuestions }) => {
         setCorrectAnswer(null);
         setIdQuestionEdit(null);
     };
-    const onChangeOptionPageQuestion = (option) => {
-        setOptionPageQuestion(option);
+    const toggleFormAddQuestion = () => {
+        setIsAddQuestion(!isAddQuestion);
         onResetForm();
     };
     const onSelectClassToAdd = (value) => {
@@ -109,8 +110,8 @@ const QuestionContainer = ({ navigation, backHome, numQuestions }) => {
                 onSubmitFormQuestion={onSubmitFormQuestion}
                 onSelectClassToAdd={onSelectClassToAdd}
                 classQuestion={classQuestion}
-                onChangeOptionPageQuestion={onChangeOptionPageQuestion}
-                optionPageQuestion={optionPageQuestion}
+                toggleFormAddQuestion={toggleFormAddQuestion}
+                isAddQuestion={isAddQuestion}
                 setIdQuestionEdit={setIdQuestionEdit}
                 onSearchQuestion={onSearchQuestion}
             />

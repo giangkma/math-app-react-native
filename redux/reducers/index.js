@@ -10,11 +10,12 @@ const initialState = {
     ranksInClass: [],
     user: null,
     loading: false,
+    isDarkTheme: false
 };
 const persistCartConfig = {
     key: "state",
     storage: AsyncStorage,
-    whitelist: ["accessToken", "questions", "ranks", "user"],
+    whitelist: ["accessToken", "questions", "ranks", "user", "isDarkTheme"],
 };
 
 const rootReducers = (state = initialState, action) => {
@@ -23,6 +24,13 @@ const rootReducers = (state = initialState, action) => {
             return {
                 ...state,
                 loading: true,
+            };
+        }
+        case CONSTANTS.TOGLE_THEME: {
+            const { isDarkTheme } = state;
+            return {
+                ...state,
+                isDarkTheme: !isDarkTheme,
             };
         }
         case CONSTANTS.HIDE_LOADING: {

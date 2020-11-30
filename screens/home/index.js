@@ -1,3 +1,4 @@
+import { useTheme } from "@react-navigation/native";
 import * as React from "react";
 import {
     Image,
@@ -5,32 +6,27 @@ import {
     StyleSheet,
     Text,
     TouchableOpacity,
-    View,
+    View
 } from "react-native";
 import BackgroundButtonOptions from "../../assets/options.jpg";
 import { dataClassHomepage } from "../../untils/dummy";
 
+
 const HomeComponent = ({ navigation, numQuestions, accessToken }) => {
+    const { colors } = useTheme();
     return (
         <>
             <View style={styles.Container}>
                 <ScrollView>
-                    <View style={{ padding: 10 }}>
-                        {!accessToken && (
-                            <Text style={{ fontSize: 17, textAlign: "center" }}>
-                                {"Hãy chọn lớp để tiếp tục"}
-                            </Text>
-                        )}
-                    </View>
                     <View
                         style={{
-                            marginTop: -15,
-                            marginBottom: 15,
+                            marginTop: -5,
+                            marginBottom: 5,
                             paddingLeft: 15,
                             paddingRight: 15,
                         }}
                     >
-                        {accessToken && (
+                        {accessToken === "admin" && (
                             <TouchableOpacity
                                 style={{ ...styles.card, width: "100%" }}
                                 onPress={() => navigation.navigate("Question")}
@@ -49,8 +45,19 @@ const HomeComponent = ({ navigation, numQuestions, accessToken }) => {
                     {dataClassHomepage.map((item, index) => {
                         return (
                             <View key={index}>
-                                <View style={styles.headerContent}>
-                                    <Text style={styles.headerContentTitle}>
+                                <View
+                                    style={{
+                                        ...styles.headerContent,
+                                        backgroundColor:
+                                            colors.headerContentHome,
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            ...styles.headerContentTitle,
+                                            color: colors.text,
+                                        }}
+                                    >
                                         {item.title}
                                     </Text>
                                 </View>
@@ -75,9 +82,12 @@ const HomeComponent = ({ navigation, numQuestions, accessToken }) => {
                                                 >
                                                     <Image
                                                         source={item.background}
-                                                        style={
-                                                            styles.backgroundImageCard
-                                                        }
+                                                        style={{
+                                                            ...styles.backgroundImageCard,
+                                                            borderWidth:
+                                                                colors.borderWidthCardClass,
+                                                            borderColor: "#fff",
+                                                        }}
                                                     />
                                                     <View
                                                         style={
@@ -104,12 +114,10 @@ const HomeComponent = ({ navigation, numQuestions, accessToken }) => {
 };
 const styles = StyleSheet.create({
     headerContent: {
-        backgroundColor: "#d2dae2",
         padding: 8,
         marginBottom: 5,
     },
     headerContentTitle: {
-        color: "#1e272e",
         fontSize: 20,
         textAlign: "center",
     },
@@ -118,7 +126,6 @@ const styles = StyleSheet.create({
         position: "absolute",
         top: 0,
         width: "100%",
-        backgroundColor: "#ecf0f1",
     },
     listCard: {
         display: "flex",

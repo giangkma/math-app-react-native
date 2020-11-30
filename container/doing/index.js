@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import DoingComponent from "../../screens/doing";
 import { updateRanksThunk } from "../../redux/thunk";
+import DoingComponent from "../../screens/doing";
 import { arrayDummy } from "../../untils/dummy";
 import { showAlert, shuffleArray } from "../../untils/functions";
 
@@ -14,19 +14,9 @@ const useConnect = () => {
     const dispatch = useDispatch();
     const mapDispatch = React.useMemo(
         () => ({
-            onUpdateRanksThunk: (
-                nameUser,
-                passwordUser,
-                classNameUser,
-                scoreUser
-            ) =>
+            onUpdateRanksThunk: (fullName, password, classUser, scoreUser) =>
                 dispatch(
-                    updateRanksThunk(
-                        nameUser,
-                        passwordUser,
-                        classNameUser,
-                        scoreUser
-                    )
+                    updateRanksThunk(fullName, password, classUser, scoreUser)
                 ),
         }),
         [dispatch]
@@ -75,20 +65,15 @@ const DoingContainer = ({ navigation, route }) => {
         //toggle modal
         setIsShowModalResult(!isShowModalResult);
     };
-    const onSendResult = async (
-        nameUser,
-        passwordUser,
-        classNameUser,
-        scoreUser
-    ) => {
+    const onSendResult = async (fullName, password, classUser, scoreUser) => {
         // gửi kết quả để xếp hạng điểm
         const res = await onUpdateRanksThunk(
-            nameUser,
-            passwordUser,
-            classNameUser,
+            fullName,
+            password,
+            classUser,
             scoreUser
         );
-        if (res) backHome();
+        if (res) navigation.navigate("Home");
     };
     const onNextQuestion = () => {
         // random câu hỏi tiếp và xóa dữ liệu câu hỏi cũ

@@ -13,54 +13,50 @@ import {
     useTheme,
 } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useDispatch, useSelector } from "react-redux";
 import AvatarImage from "../../assets/avatar.png";
+import { actionLogout, actionTogleTheme } from "../../redux/actions";
+// connect redux
+const useConnect = () => {
+    const mapState = {
+        isDarkTheme: useSelector((state) => state.isDarkTheme),
+        user: useSelector((state) => state.user),
+    };
+    const dispatch = useDispatch();
+    const mapDispatch = React.useMemo(
+        () => ({
+            onTogleTheme: () => dispatch(actionTogleTheme()),
+            onLogout: () => dispatch(actionLogout()),
+        }),
+        [dispatch]
+    );
 
+    return {
+        ...mapState,
+        ...mapDispatch,
+    };
+};
 export function DrawerContent(props) {
     const paperTheme = useTheme();
+    const { onTogleTheme, isDarkTheme, onLogout, user } = useConnect();
+    const { fullName } = user;
     return (
         <View style={{ flex: 1 }}>
             <DrawerContentScrollView {...props}>
                 <View style={styles.drawerContent}>
                     <View style={styles.userInfoSection}>
-                        <View style={{ flexDirection: "row", marginTop: 15 }}>
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                padding: 8,
+                                alignItems: "center",
+                            }}
+                        >
                             <Avatar.Image source={AvatarImage} size={50} />
-                            <View
-                                style={{
-                                    marginLeft: 15,
-                                    flexDirection: "column",
-                                }}
-                            >
-                                <Title style={styles.title}>
-                                    Đặng Trường Giang
-                                </Title>
-                                <Caption style={styles.caption}>
-                                    @truonggiang20
-                                </Caption>
-                            </View>
+                            <Title style={styles.title}>
+                                {fullName}
+                            </Title>
                         </View>
-
-                        {/* <View style={styles.row}>
-                            <View style={styles.section}>
-                                <Paragraph
-                                    style={[styles.paragraph, styles.caption]}
-                                >
-                                    80
-                                </Paragraph>
-                                <Caption style={styles.caption}>
-                                    Following
-                                </Caption>
-                            </View>
-                            <View style={styles.section}>
-                                <Paragraph
-                                    style={[styles.paragraph, styles.caption]}
-                                >
-                                    100
-                                </Paragraph>
-                                <Caption style={styles.caption}>
-                                    Followers
-                                </Caption>
-                            </View>
-                        </View> */}
                     </View>
 
                     <Drawer.Section style={styles.drawerSection}>
@@ -87,7 +83,7 @@ export function DrawerContent(props) {
                             )}
                             label="Tài khoản"
                             onPress={() => {
-                                props.navigation.navigate("Profile");
+                                props.navigation.navigate("Account");
                             }}
                         />
                         <DrawerItem
@@ -100,7 +96,7 @@ export function DrawerContent(props) {
                             )}
                             label="Bảng xếp hạng"
                             onPress={() => {
-                                props.navigation.navigate("BookmarkScreen");
+                                props.navigation.navigate("Rank");
                             }}
                         />
                         <DrawerItem
@@ -113,20 +109,23 @@ export function DrawerContent(props) {
                             )}
                             label="Hỗ trợ"
                             onPress={() => {
-                                props.navigation.navigate("SupportScreen");
+                                props.navigation.navigate("Support");
                             }}
                         />
                     </Drawer.Section>
                     <Drawer.Section title="Tùy chỉnh">
                         <TouchableRipple
                             onPress={() => {
-                                toggleTheme();
+                                onTogleTheme();
+                                setTimeout(()=>{
+                                    props.navigation.toggleDrawer();
+                                },400);
                             }}
                         >
                             <View style={styles.preference}>
                                 <Text>Giao diện tối</Text>
                                 <View pointerEvents="none">
-                                    <Switch value={paperTheme.dark} />
+                                    <Switch value={isDarkTheme} />
                                 </View>
                             </View>
                         </TouchableRipple>
@@ -139,8 +138,9 @@ export function DrawerContent(props) {
                         <Icon name="exit-to-app" color={color} size={size} />
                     )}
                     label="Đăng xuất"
-                    onPress={() => {
-                        signOut();
+                    onPress={()=>{
+                        onLogout(),
+                        props.navigation.toggleDrawer();
                     }}
                 />
             </Drawer.Section>
@@ -154,11 +154,14 @@ const styles = StyleSheet.create({
     },
     userInfoSection: {
         paddingLeft: 20,
+        backgroundColor: "#dcdde140",
+        marginTop: -5,
+        elevation: 1,
     },
     title: {
         fontSize: 16,
-        marginTop: 3,
         fontWeight: "bold",
+        marginLeft: 10,
     },
     caption: {
         fontSize: 14,

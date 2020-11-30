@@ -2,106 +2,94 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import React from "react";
 import {
-    View,
-    Text,
-    Button,
-    TouchableOpacity,
-    Dimensions,
-    TextInput,
     Platform,
-    StyleSheet,
     ScrollView,
-    StatusBar,
+    StyleSheet,
+    Text,
+
+    TouchableOpacity,
+    View
 } from "react-native";
 import * as Animatable from "react-native-animatable";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import InputReactHook from "../../commons/input";
+import { DEFAULT_COLOR } from "../../untils/constants";
 
-const SignupScreen = ({ navigation }) => {
-    const [data, setData] = React.useState({
-        username: "",
-        password: "",
-        confirm_password: "",
-        check_textInputChange: false,
-        secureTextEntry: true,
-        confirm_secureTextEntry: true,
-    });
-
-    const textInputChange = (val) => {
-        if (val.length !== 0) {
-            setData({
-                ...data,
-                username: val,
-                check_textInputChange: true,
-            });
-        } else {
-            setData({
-                ...data,
-                username: val,
-                check_textInputChange: false,
-            });
-        }
-    };
-
-    const handlePasswordChange = (val) => {
-        setData({
-            ...data,
-            password: val,
-        });
-    };
-
-    const handleConfirmPasswordChange = (val) => {
-        setData({
-            ...data,
-            confirm_password: val,
-        });
-    };
-
-    const updateSecureTextEntry = () => {
-        setData({
-            ...data,
-            secureTextEntry: !data.secureTextEntry,
-        });
-    };
-
-    const updateConfirmSecureTextEntry = () => {
-        setData({
-            ...data,
-            confirm_secureTextEntry: !data.confirm_secureTextEntry,
-        });
-    };
-
+const LoginInScreen = ({
+    navigation,
+    onSubmit,
+    colors,
+    handleShowPassword,
+    isShowPassword,
+    register,
+    handleSubmit,
+    control,
+    errors,
+    handleShowConfirmPassword,
+    isShowConfirmPassword
+}) => {
     return (
         <View style={styles.container}>
-            <StatusBar backgroundColor="#009387" barStyle="light-content" />
             <View style={styles.header}>
-                <Text style={styles.text_header}>Đăng ký ngay!</Text>
+                <Animatable.Text animation="fadeInRightBig">
+                    <Text style={styles.text_header}>Đăng ký ngay</Text>
+                </Animatable.Text>
             </View>
-            <Animatable.View animation="fadeInUpBig" style={styles.footer}>
+
+            <Animatable.View
+                animation="fadeInUpBig"
+                style={[
+                    styles.footer,
+                    {
+                        backgroundColor: colors.background,
+                    },
+                ]}
+            >
                 <ScrollView>
-                    <Text style={styles.text_footer}>Họ và tên</Text>
-                    <View style={styles.action}>
-                        <FontAwesome name="user-o" color="#05375a" size={20} />
-                        <TextInput
-                            placeholder="Họ và tên"
-                            style={styles.textInput}
-                            autoCapitalize="none"
-                            onChangeText={(val) => textInputChange(val)}
-                        />
-                        {data.check_textInputChange ? (
-                            <Animatable.View animation="bounceIn">
-                                <Feather
-                                    name="check-circle"
-                                    color="green"
-                                    size={20}
-                                />
-                            </Animatable.View>
-                        ) : null}
-                    </View>
                     <Text
                         style={[
                             styles.text_footer,
                             {
+                                color: colors.text,
+                            },
+                        ]}
+                    >
+                        Họ và tên
+                    </Text>
+                    <View style={styles.action}>
+                        <FontAwesome
+                            name="user-o"
+                            color={colors.text}
+                            size={20}
+                        />
+                        <InputReactHook
+                            aref={register}
+                            placeholder="Họ và tên"
+                            name="fullName"
+                            control={control}
+                            defaultValue={""}
+                            style={[
+                                styles.textInput,
+                                {
+                                    color: colors.text,
+                                },
+                            ]}
+                        />
+                    </View>
+                    {errors && errors.fullName && (
+                        <Animatable.View animation="fadeInLeft" duration={500}>
+                            <Text style={styles.errorMsg}>
+                                {errors.fullName.message}
+                            </Text>
+                        </Animatable.View>
+                    )}
+
+                    <Text
+                        style={[
+                            styles.text_footer,
+                            {
+                                color: colors.text,
                                 marginTop: 20,
                             },
                         ]}
@@ -109,28 +97,35 @@ const SignupScreen = ({ navigation }) => {
                         Tài khoản
                     </Text>
                     <View style={styles.action}>
-                        <FontAwesome name="user-o" color="#05375a" size={20} />
-                        <TextInput
+                        <Feather name="lock" color={colors.text} size={20} />
+                        <InputReactHook
+                            aref={register}
                             placeholder="Tài khoản"
-                            style={styles.textInput}
-                            autoCapitalize="none"
-                            onChangeText={(val) => textInputChange(val)}
+                            name="username"
+                            control={control}
+                            defaultValue={""}
+                            style={[
+                                styles.textInput,
+                                {
+                                    color: colors.text,
+                                },
+                            ]}
+                            secureTextEntry={isShowPassword}
                         />
-                        {data.check_textInputChange ? (
-                            <Animatable.View animation="bounceIn">
-                                <Feather
-                                    name="check-circle"
-                                    color="green"
-                                    size={20}
-                                />
-                            </Animatable.View>
-                        ) : null}
                     </View>
+                    {errors && errors.username && (
+                        <Animatable.View animation="fadeInLeft" duration={500}>
+                            <Text style={styles.errorMsg}>
+                                {errors.username.message}
+                            </Text>
+                        </Animatable.View>
+                    )}
 
                     <Text
                         style={[
                             styles.text_footer,
                             {
+                                color: colors.text,
                                 marginTop: 20,
                             },
                         ]}
@@ -138,18 +133,23 @@ const SignupScreen = ({ navigation }) => {
                         Mật khẩu
                     </Text>
                     <View style={styles.action}>
-                        <Feather name="lock" color="#05375a" size={20} />
-                        <TextInput
-                            placeholder="Mật khẩu"
-                            secureTextEntry={
-                                data.secureTextEntry ? true : false
-                            }
-                            style={styles.textInput}
-                            autoCapitalize="none"
-                            onChangeText={(val) => handlePasswordChange(val)}
+                        <Feather name="lock" color={colors.text} size={20} />
+                        <InputReactHook
+                            aref={register}
+                            placeholder="Password"
+                            name="password"
+                            control={control}
+                            defaultValue={""}
+                            style={[
+                                styles.textInput,
+                                {
+                                    color: colors.text,
+                                },
+                            ]}
+                            secureTextEntry={!isShowPassword}
                         />
-                        <TouchableOpacity onPress={updateSecureTextEntry}>
-                            {data.secureTextEntry ? (
+                        <TouchableOpacity onPress={handleShowPassword}>
+                            {!isShowPassword ? (
                                 <Feather
                                     name="eye-off"
                                     color="grey"
@@ -160,11 +160,19 @@ const SignupScreen = ({ navigation }) => {
                             )}
                         </TouchableOpacity>
                     </View>
+                    {errors && errors.password && (
+                        <Animatable.View animation="fadeInLeft" duration={500}>
+                            <Text style={styles.errorMsg}>
+                                {errors.password.message}
+                            </Text>
+                        </Animatable.View>
+                    )}
 
                     <Text
                         style={[
                             styles.text_footer,
                             {
+                                color: colors.text,
                                 marginTop: 20,
                             },
                         ]}
@@ -172,22 +180,23 @@ const SignupScreen = ({ navigation }) => {
                         Nhập lại mật khẩu
                     </Text>
                     <View style={styles.action}>
-                        <Feather name="lock" color="#05375a" size={20} />
-                        <TextInput
-                            placeholder="Nhập lại mật khẩu"
-                            secureTextEntry={
-                                data.confirm_secureTextEntry ? true : false
-                            }
-                            style={styles.textInput}
-                            autoCapitalize="none"
-                            onChangeText={(val) =>
-                                handleConfirmPasswordChange(val)
-                            }
+                        <Feather name="lock" color={colors.text} size={20} />
+                        <InputReactHook
+                            aref={register}
+                            placeholder="Confirm password"
+                            name="confirmPassword"
+                            control={control}
+                            defaultValue={""}
+                            style={[
+                                styles.textInput,
+                                {
+                                    color: colors.text,
+                                },
+                            ]}
+                            secureTextEntry={!isShowConfirmPassword}
                         />
-                        <TouchableOpacity
-                            onPress={updateConfirmSecureTextEntry}
-                        >
-                            {data.secureTextEntry ? (
+                        <TouchableOpacity onPress={handleShowConfirmPassword}>
+                            {!isShowConfirmPassword ? (
                                 <Feather
                                     name="eye-off"
                                     color="grey"
@@ -198,17 +207,23 @@ const SignupScreen = ({ navigation }) => {
                             )}
                         </TouchableOpacity>
                     </View>
+                    {errors && errors.confirmPassword && (
+                        <Animatable.View animation="fadeInLeft" duration={500}>
+                            <Text style={styles.errorMsg}>
+                                {errors.confirmPassword.message}
+                            </Text>
+                        </Animatable.View>
+                    )}
+
                     <View style={styles.button}>
                         <TouchableOpacity
                             style={styles.signIn}
-                            onPress={() => {
-                                loginHandle(data.username, data.password);
-                            }}
+                            onPress={handleSubmit(onSubmit)}
                             style={[
                                 styles.signIn,
                                 {
-                                    backgroundColor: "#009387",
-                                    marginTop: 20,
+                                    backgroundColor: DEFAULT_COLOR,
+                                    marginTop: 15,
                                 },
                             ]}
                         >
@@ -225,11 +240,11 @@ const SignupScreen = ({ navigation }) => {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            onPress={() => navigation.goBack()}
+                            onPress={() => navigation.navigate("Login")}
                             style={[
                                 styles.signIn,
                                 {
-                                    borderColor: "#009387",
+                                    borderColor: DEFAULT_COLOR,
                                     borderWidth: 1,
                                     marginTop: 15,
                                 },
@@ -239,7 +254,7 @@ const SignupScreen = ({ navigation }) => {
                                 style={[
                                     styles.textSign,
                                     {
-                                        color: "#009387",
+                                        color: DEFAULT_COLOR,
                                     },
                                 ]}
                             >
@@ -253,21 +268,22 @@ const SignupScreen = ({ navigation }) => {
     );
 };
 
-export default SignupScreen;
+export default LoginInScreen;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#009387",
+        backgroundColor: DEFAULT_COLOR,
     },
     header: {
         flex: 1,
         justifyContent: "flex-end",
         paddingHorizontal: 20,
-        paddingBottom: 40,
+        paddingBottom: 30,
+        marginTop: -70
     },
     footer: {
-        flex: Platform.OS === "ios" ? 3 : 5,
+        flex: 3,
         backgroundColor: "#fff",
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
@@ -290,11 +306,23 @@ const styles = StyleSheet.create({
         borderBottomColor: "#f2f2f2",
         paddingBottom: 5,
     },
+    actionError: {
+        flexDirection: "row",
+        marginTop: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: "#FF0000",
+        paddingBottom: 5,
+    },
     textInput: {
         flex: 1,
         marginTop: Platform.OS === "ios" ? 0 : -12,
         paddingLeft: 10,
         color: "#05375a",
+        fontSize: 16
+    },
+    errorMsg: {
+        color: "#FF0000",
+        fontSize: 14,
     },
     button: {
         alignItems: "center",
