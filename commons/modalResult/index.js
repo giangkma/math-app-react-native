@@ -5,7 +5,6 @@ import { Overlay } from "react-native-elements";
 import { ProgressBar } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import ButtonComponent from "../../commons/button";
-import { checkInformationThunk } from "../../redux/thunk";
 import { DEFAULT_COLOR } from "../../untils/constants";
 // connect redux
 const useConnect = () => {
@@ -15,8 +14,8 @@ const useConnect = () => {
     const dispatch = useDispatch();
     const mapDispatch = React.useMemo(
         () => ({
-            onCheckInformationThunk: (fullName, password) =>
-                dispatch(checkInformationThunk(fullName, password)),
+            // onCheckInformationThunk: (fullName, password) =>
+            //     dispatch(checkInformationThunk(fullName, password)),
         }),
         [dispatch]
     );
@@ -32,19 +31,16 @@ const ModalResult = ({
     onToggleModalResult,
     numberOfCorrect,
     numberOfWrong,
-    className,
 }) => {
     const answerNumber = numberOfCorrect + numberOfWrong;
     const exactRate = answerNumber === 0 ? 0 : numberOfCorrect / answerNumber;
     const wrongRate = answerNumber === 0 ? 0 : numberOfWrong / answerNumber;
 
-    const { user } = useConnect();
     const score = (numberOfCorrect - numberOfWrong) * 10;
     const sendResult = () => {
         //trường hợp đã lưu thông tin user
-        const { fullName, password } = user; //lấy thông tin và thực hiện update score
         onToggleModalResult();
-        onSendResult(fullName, password, className, score);
+        onSendResult(score);
     };
     return (
         <Overlay

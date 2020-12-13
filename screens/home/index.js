@@ -6,13 +6,12 @@ import {
     StyleSheet,
     Text,
     TouchableOpacity,
-    View
+    View,
 } from "react-native";
 import BackgroundButtonOptions from "../../assets/options.jpg";
 import { dataClassHomepage } from "../../untils/dummy";
 
-
-const HomeComponent = ({ navigation, numQuestions, accessToken }) => {
+const HomeComponent = ({ navigation, numQuestions, role }) => {
     const { colors } = useTheme();
     return (
         <>
@@ -26,7 +25,7 @@ const HomeComponent = ({ navigation, numQuestions, accessToken }) => {
                             paddingRight: 15,
                         }}
                     >
-                        {accessToken === "admin" && (
+                        {role === "admin" && (
                             <TouchableOpacity
                                 style={{ ...styles.card, width: "100%" }}
                                 onPress={() => navigation.navigate("Question")}

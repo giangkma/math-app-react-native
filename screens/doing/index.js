@@ -1,7 +1,16 @@
 import { useTheme } from "@react-navigation/native";
 import * as React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
 import * as Animatable from "react-native-animatable";
+import { Button } from "react-native-elements";
 import { RadioButton } from "react-native-paper";
 import BackgroundButtonOptions from "../../assets/doing.png";
 import ButtonComponent from "../../commons/button";
@@ -11,12 +20,13 @@ import Success from "../../commons/success";
 import { DEFAULT_COLOR } from "../../untils/constants";
 import { buttonsAnswer } from "../../untils/dummy";
 import { commonStyles } from "../../untils/styles/global";
+import { showAlert } from "../../untils/functions";
 
 const PrepareExample = ({ className, onStart, numQuestions, backHome }) => {
     const { colors } = useTheme();
 
     return (
-        <>
+        <Animatable.View animation="slideInUp" easing="ease-out">
             <View style={styles.Container}>
                 <View
                     style={{
@@ -27,20 +37,14 @@ const PrepareExample = ({ className, onStart, numQuestions, backHome }) => {
                         alignItems: "center",
                     }}
                 >
-                    <Animatable.Image
-                        animation="slideInDown"
-                        easing="ease-out"
+                    <Image
                         source={BackgroundButtonOptions}
                         style={{
                             width: 300,
                             height: 300,
                         }}
                     />
-                    <Animatable.View
-                        animation="slideInRight"
-                        easing="ease-out"
-                        style={{ marginTop: -40 }}
-                    >
+                    <View style={{ marginTop: -40 }}>
                         {numQuestions !== 0 ? (
                             <Text
                                 style={{
@@ -62,8 +66,8 @@ const PrepareExample = ({ className, onStart, numQuestions, backHome }) => {
                                 {`Hiện tại không có dữ liệu câu hỏi lớp ${className} ! Chúng tôi sẽ cập nhật trong thời gian sắp tới`}
                             </Text>
                         )}
-                    </Animatable.View>
-                    <Animatable.View animation="slideInUp" easing="ease-out">
+                    </View>
+                    <View>
                         <ButtonComponent
                             title={
                                 numQuestions !== 0
@@ -77,10 +81,10 @@ const PrepareExample = ({ className, onStart, numQuestions, backHome }) => {
                             }}
                             titleStyle={{ fontSize: 16 }}
                         />
-                    </Animatable.View>
+                    </View>
                 </View>
             </View>
-        </>
+        </Animatable.View>
     );
 };
 const StartExample = ({
@@ -89,16 +93,16 @@ const StartExample = ({
     onSubmitAnswer,
     count,
     question,
-    arrayAnwers,
     isAnsweredQuestion,
     onNextQuestion,
     isAnsweredCorrectly,
     numberOfWrong,
     onEnd,
     numberOfCorrect,
+    onUserReportQuestion,
 }) => {
     const { colors } = useTheme();
-
+    const { id, correctAnswer, arrayAnswer } = question;
     const onCheckAnswer = (answerItem) => {
         if (!isAnsweredQuestion) {
             //Nguời dùng chưa click submit câu trả lời
@@ -112,7 +116,7 @@ const StartExample = ({
                 // nếu là câu trả lời sai
                 if (answer === answerItem) {
                     return "#EA2027"; // đổi màu đáp án sai
-                } else if (question.correctAnswer === answerItem) {
+                } else if (correctAnswer === answerItem) {
                     return DEFAULT_COLOR; // đổi màu đáp án đúng
                 }
                 return "#DAE2ED";
@@ -125,8 +129,14 @@ const StartExample = ({
             }
         }
     };
+    React.useEffect(() => {
+        showAlert(
+            "Nếu bạn nhận thấy đáp án của chúng tôi không chính xác ! Hãy bấm 'Báo cáo' để chúng tôi có thể xem xét và sửa câu hỏi đó",
+            "Lưu ý ❗"
+        );
+    }, []);
     return (
-        <>
+        <View style={{ position: "relative", height: "100%" }}>
             <View
                 style={{
                     display: "flex",
@@ -135,15 +145,16 @@ const StartExample = ({
                     justifyContent: "space-between",
                     padding: 5,
                     backgroundColor: colors.headerContentHome,
-                    zIndex: 100
+                    zIndex: 100,
                 }}
             >
-                <ButtonComponent
+                <Button
                     buttonStyle={{
                         ...commonStyles.buttonSubmit,
                         backgroundColor: "#EA2027",
+                        borderRadius: 5,
                     }}
-                    titleStyle={{ fontSize: 12 }}
+                    titleStyle={{ fontSize: 16 }}
                     title="Kết thúc"
                     onPress={onEnd}
                 />
@@ -153,110 +164,173 @@ const StartExample = ({
                     </Text>
                 </View>
             </View>
-            <View
-                style={{
-                    display: "flex",
-                    height: "100%",
-                    alignItems: "center",
-                    marginTop: -50,
-                    justifyContent: "center",
-                }}
-            >
-                <View style={styles.countAnswer}>
-                    <Text style={{ color: "#fff", fontSize: 24 }}>
-                        {`Câu ${count}`}
-                    </Text>
+            <ScrollView>
+                <View
+                    style={{
+                        padding: 5,
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "flex-end",
+                        alignItems: "center",
+                        flexWrap: "wrap",
+                    }}
+                >
+                    <Button
+                        onPress={() => {
+                            onUserReportQuestion(id);
+                        }}
+                        buttonStyle={{ height: 35 }}
+                        title="Báo cáo"
+                    />
                 </View>
-                <View style={styles.titleAnswer}>
-                    <Text style={{ color: "#fff", fontSize: 20 }}>
-                        {`( ID: ${question.id} )`} {" : "} {question.question}
-                    </Text>
-                </View>
-                {isAnsweredQuestion ? ( // nếu đã submit sẽ hiển thị thông báo
-                    !isAnsweredCorrectly ? ( //thông báo nếu câu trả lời là sai
-                        <Error
-                            message={`Sai rồi ! Đáp án chính xác : ${question.correctAnswer}`}
-                        />
-                    ) : (
-                        // thông báo nếu câu trả lời là đúng
-                        <Success message="Rất tốt" />
-                    )
-                ) : null}
-                <View style={styles.rowAnswer}>
-                    {buttonsAnswer.map((button, index) => {
-                        const answerItem = arrayAnwers[index];
-                        return (
-                            <TouchableOpacity
-                                key={index}
-                                onPress={() => {
-                                    if (!isAnsweredQuestion)
-                                        onSelectAnswer(answerItem);
-                                }}
-                            >
-                                <View
-                                    style={{
-                                        borderWidth: 3,
-                                        borderColor: onCheckAnswer(answerItem),
-                                        height: 50,
-                                        marginTop: 8,
-                                        marginLeft: 20,
-                                        marginRight: 20,
-                                        borderRadius: 10,
-                                        display: "flex",
-                                        flexDirection: "row",
-                                        alignItems: "center",
-                                        paddingLeft: 5,
+                <View
+                    style={{
+                        display: "flex",
+                        height: "100%",
+                        alignItems: "center",
+                        marginTop: 20,
+                        marginBottom: 80,
+                        justifyContent: "flex-start",
+                    }}
+                >
+                    <View style={styles.countAnswer}>
+                        <Text style={{ color: "#fff", fontSize: 24 }}>
+                            {`Câu ${count}`}
+                        </Text>
+                    </View>
+                    <View style={styles.titleAnswer}>
+                        <Text
+                            style={{
+                                color: "#fff",
+                                fontSize: 20,
+                            }}
+                        >
+                            {`Đề bài : `}
+                            {question.question}
+                        </Text>
+                    </View>
+                    {isAnsweredQuestion ? ( // nếu đã submit sẽ hiển thị thông báo
+                        !isAnsweredCorrectly ? ( //thông báo nếu câu trả lời là sai
+                            <Error
+                                message={`Sai rồi ! Đáp án chính xác : ${correctAnswer}`}
+                            />
+                        ) : (
+                            // thông báo nếu câu trả lời là đúng
+                            <Success message="Rất tốt !" />
+                        )
+                    ) : null}
+                    <View style={styles.rowAnswer}>
+                        {buttonsAnswer.map((button, index) => {
+                            const answerItem = arrayAnswer[index];
+                            return (
+                                <TouchableOpacity
+                                    key={index}
+                                    onPress={() => {
+                                        if (!isAnsweredQuestion)
+                                            onSelectAnswer(answerItem);
                                     }}
                                 >
-                                    <RadioButton
-                                        status={
-                                            answer === answerItem
-                                                ? "checked"
-                                                : "unchecked"
-                                        }
-                                        color={onCheckAnswer(answerItem)}
-                                        onPress={() => {
-                                            if (!isAnsweredQuestion)
-                                                onSelectAnswer(answerItem);
-                                        }}
-                                    />
-                                    <Text
+                                    <View
                                         style={{
-                                            fontSize: 20,
-                                            marginLeft: 5,
-                                            color: colors.text,
+                                            borderWidth: 3,
+                                            borderColor: onCheckAnswer(
+                                                answerItem
+                                            ),
+                                            backgroundColor:
+                                                answer === answerItem ||
+                                                (isAnsweredQuestion &&
+                                                    correctAnswer ===
+                                                        answerItem)
+                                                    ? `${onCheckAnswer(
+                                                          answerItem
+                                                      )}50`
+                                                    : null,
+                                            height: 50,
+                                            marginTop: 10,
+                                            marginLeft: 20,
+                                            marginRight: 20,
+                                            borderRadius: 10,
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            paddingLeft: 5,
                                         }}
                                     >
-                                        {`${button.key}: ${answerItem}`}
-                                    </Text>
-                                </View>
-                            </TouchableOpacity>
-                        );
-                    })}
+                                        <RadioButton
+                                            status={
+                                                answer === answerItem
+                                                    ? "checked"
+                                                    : "unchecked"
+                                            }
+                                            color={onCheckAnswer(answerItem)}
+                                            onPress={() => {
+                                                if (!isAnsweredQuestion)
+                                                    onSelectAnswer(answerItem);
+                                            }}
+                                        />
+                                        <Text
+                                            style={{
+                                                fontSize: 20,
+                                                marginLeft: 5,
+                                                color: colors.text,
+                                            }}
+                                        >
+                                            {`${button.key}: ${answerItem}`}
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </View>
                 </View>
-                <View style={{ marginTop: 20 }}>
+            </ScrollView>
+            {answer && (
+                <View
+                    style={{
+                        width: "100%",
+                        height: 50,
+                        position: "absolute",
+                        bottom: 0,
+                    }}
+                >
                     {isAnsweredQuestion ? (
-                        <ButtonComponent
-                            buttonStyle={commonStyles.buttonSubmit}
-                            titleStyle={{ fontSize: 14 }}
+                        <Button
+                            buttonStyle={{
+                                ...commonStyles.buttonSubmit,
+                                borderRadius: 0,
+                                height: 50,
+                            }}
+                            titleStyle={{ fontSize: 18, marginRight: 5 }}
                             title="Câu tiếp"
                             onPress={onNextQuestion}
+                            icon={
+                                <Icon
+                                    name="arrow-right"
+                                    size={19}
+                                    color="white"
+                                />
+                            }
+                            iconRight
                         />
                     ) : (
-                        <ButtonComponent
-                            buttonStyle={commonStyles.buttonSubmit}
-                            titleStyle={{ fontSize: 14 }}
+                        <Button
+                            buttonStyle={{
+                                ...commonStyles.buttonSubmit,
+                                borderRadius: 0,
+                                height: 50,
+                            }}
+                            titleStyle={{ fontSize: 18 }}
                             title="Gửi kết quả"
                             onPress={onSubmitAnswer}
                         />
                     )}
                 </View>
-            </View>
-        </>
+            )}
+        </View>
     );
 };
 const DoingComponent = ({
-    navigation,
+    // navigation,
     className,
     backHome,
     numQuestions,
@@ -267,7 +341,6 @@ const DoingComponent = ({
     onSubmitAnswer,
     count,
     question,
-    arrayAnwers,
     isAnsweredQuestion,
     onNextQuestion,
     isAnsweredCorrectly,
@@ -277,6 +350,7 @@ const DoingComponent = ({
     onEnd,
     numberOfWrong,
     numberOfCorrect,
+    onUserReportQuestion,
 }) => {
     return (
         <>
@@ -288,13 +362,13 @@ const DoingComponent = ({
                         onSubmitAnswer={onSubmitAnswer}
                         question={question}
                         count={count}
-                        arrayAnwers={arrayAnwers}
                         isAnsweredQuestion={isAnsweredQuestion}
                         onNextQuestion={onNextQuestion}
                         isAnsweredCorrectly={isAnsweredCorrectly}
                         numberOfWrong={numberOfWrong}
                         numberOfCorrect={numberOfCorrect}
                         onEnd={onEnd}
+                        onUserReportQuestion={onUserReportQuestion}
                     />
                 ) : (
                     <PrepareExample
@@ -319,9 +393,9 @@ const DoingComponent = ({
 const styles = StyleSheet.create({
     countAnswer: {
         backgroundColor: "rgb(201, 152, 46)",
-        padding: 10,
-        paddingLeft: 50,
-        paddingRight: 50,
+        padding: 6,
+        paddingLeft: 30,
+        paddingRight: 30,
         borderWidth: 5,
         borderRadius: 10,
         borderColor: "#ffdf86",
@@ -329,13 +403,13 @@ const styles = StyleSheet.create({
     titleAnswer: {
         backgroundColor: "#6D214F",
         padding: 10,
-        paddingLeft: 50,
-        paddingRight: 50,
         borderWidth: 5,
         borderRadius: 10,
         borderColor: "#B33771",
         marginTop: 15,
         marginBottom: 10,
+        marginLeft: 15,
+        marginRight: 15,
     },
     rowAnswer: {
         display: "flex",

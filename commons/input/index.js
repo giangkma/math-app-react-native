@@ -12,7 +12,7 @@ const InputReactHook = ({
     control,
     defaultValue,
     error,
-    secureTextEntry
+    secureTextEntry,
 }) => {
     const { colors } = useTheme();
     return (

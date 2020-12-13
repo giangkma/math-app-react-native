@@ -43,7 +43,7 @@ const App = () => {
                         />
                     ) : (
                         <Drawer.Screen
-                            name="Home"
+                            name="HomePage"
                             component={HomeStackScreen}
                         />
                     )}

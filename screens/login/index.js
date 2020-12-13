@@ -17,6 +17,7 @@ import Feather from "react-native-vector-icons/Feather";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { DEFAULT_COLOR } from "../../untils/constants";
 import { Switch, TouchableRipple } from "react-native-paper";
+import { commonStyles } from "../../untils/styles/global";
 
 const LoginInScreen = ({
     navigation,
@@ -70,7 +71,7 @@ const LoginInScreen = ({
                             control={control}
                             defaultValue={""}
                             style={[
-                                styles.textInput,
+                                commonStyles.textInput,
                                 {
                                     color: colors.text,
                                 },
@@ -105,7 +106,7 @@ const LoginInScreen = ({
                             control={control}
                             defaultValue={""}
                             style={[
-                                styles.textInput,
+                                commonStyles.textInput,
                                 {
                                     color: colors.text,
                                 },
@@ -229,12 +230,7 @@ const styles = StyleSheet.create({
         borderBottomColor: "#FF0000",
         paddingBottom: 5,
     },
-    textInput: {
-        flex: 1,
-        marginTop: Platform.OS === "ios" ? 0 : -12,
-        paddingLeft: 10,
-        color: "#05375a",
-    },
+
     errorMsg: {
         color: "#FF0000",
         fontSize: 14,

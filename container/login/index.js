@@ -6,11 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { actionTogleTheme } from "../../redux/actions";
 import { loginThunk } from "../../redux/thunk";
 import LoginComponent from "../../screens/login";
+import { getToken } from "../../untils/functions";
 import { validationLogin, LoginSchema } from "../../untils/validation";
 // connect redux
 const useConnect = () => {
     const mapState = {
-        // isDarkTheme: useSelector((state) => state.isDarkTheme),
+        accessToken: useSelector((state) => state.accessToken),
     };
     const dispatch = useDispatch();
     const mapDispatch = React.useMemo(
@@ -32,7 +33,7 @@ const LoginContainer = ({ navigation }) => {
     });
 
     const { colors } = useTheme();
-    const { onLoginThunk } = useConnect();
+    const { onLoginThunk, accessToken } = useConnect();
     const [isShowPassword, setIsShowPassword] = React.useState(false);
 
     const handleShowPassword = () => {
@@ -42,7 +43,7 @@ const LoginContainer = ({ navigation }) => {
         const { username, password } = data;
         const res = await onLoginThunk(username, password);
         if (res) {
-            navigation.navigate("Home");
+            navigation.navigate("HomePage");
         }
     };
     return (

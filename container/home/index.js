@@ -1,21 +1,26 @@
 import * as React from "react";
 import { useEffect } from "react";
-import { Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import {
+    // fetchInformationUserThunk,
+    fetchListUserReportThunk,
+    fetchQuestionsThunk,
+} from "../../redux/thunk";
 import HomeComponent from "../../screens/home";
-import { fetchQuestionsThunk } from "../../redux/thunk";
-import DoingContainer from "../doing";
-import QuestionContainer from "../question";
 // connect redux
 const useConnect = () => {
     const mapState = {
         questions: useSelector((state) => state.questions),
-        accessToken: useSelector((state) => state.accessToken),
+        role: useSelector((state) => state.role),
+        user: useSelector((state) => state.user),
     };
     const dispatch = useDispatch();
     const mapDispatch = React.useMemo(
         () => ({
-            onFetchQuestionsThunk: () => dispatch(fetchQuestionsThunk()),
+            // onFetchInformationUserThunk: () =>
+            //     dispatch(fetchInformationUserThunk()),
+            onFetchListUserReportThunk: () =>
+                dispatch(fetchListUserReportThunk()),
         }),
         [dispatch]
     );
@@ -26,20 +31,23 @@ const useConnect = () => {
     };
 };
 const HomeContainer = ({ navigation }) => {
-    const { onFetchQuestionsThunk, questions, accessToken } = useConnect();
+    const {
+        // onFetchInformationUserThunk,
+        onFetchListUserReportThunk,
+        questions,
+        role,
+        user,
+    } = useConnect();
     useEffect(() => {
         (async () => {
-            try {
-                await onFetchQuestionsThunk();
-            } catch (e) {
-                //error
-            }
+            // await onFetchInformationUserThunk();
+            await onFetchListUserReportThunk();
         })();
-    }, []);
+    }, [onFetchListUserReportThunk]);
     return (
         <HomeComponent
             numQuestions={questions.length}
-            accessToken={accessToken}
+            role={role}
             navigation={navigation}
         />
     );

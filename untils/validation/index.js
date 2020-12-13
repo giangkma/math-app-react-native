@@ -1,4 +1,5 @@
 import * as yup from "yup";
+import { randomArrayAnswer } from "../functions";
 
 export const AccountSchema = yup.object().shape({
     password: yup
@@ -47,31 +48,109 @@ export const SignupSchema = yup.object().shape({
         .oneOf([yup.ref("password"), null], "Mật khẩu không trùng nhau"),
 });
 
-export const validationFormQuestion = (title, correctAnswer, classQuestion) => {
-    const errors = {};
-    if (!title) {
-        errors.title = "Hãy nhập đề bài";
-    } else if (typeof title === "undefined") {
-        errors.title = "Đề bài không hợp lệ";
+export const validateQuestionPage = (
+    data,
+    classQuestion,
+    title,
+    correctAnswer,
+    isRandomArrayAsnwer
+) => {
+    const error = validationClassAndTitle(classQuestion, title);
+    if (error) return { message: error };
+    else {
+        //Trường hợp user chọn "Hệ thống tự random câu hỏi";
+        const newData = {};
+        if (isRandomArrayAsnwer) {
+            const numberCorrectAnswer = Number(data.correctAnswer);
+            // kiểm tra đáp án nhập vào có phải là number không, vì nếu là string thì k random dc;
+            const error = validationCorrectAnswer(data.correctAnswer);
+            if (error) return { message: error };
+            else {
+                newData.arrayAnswer = randomArrayAnswer(numberCorrectAnswer);
+                newData.question = title;
+                newData.correctAnswer = numberCorrectAnswer;
+            }
+        } else {
+            //Truong hợp user tự nhập đáp án
+            const { answer1, answer2, answer3, answer4 } = data;
+            const error = validationAnswerQuestion(
+                answer1,
+                answer2,
+                answer3,
+                answer4
+            );
+            if (error) {
+                return { message: error };
+            } else {
+                if (!correctAnswer)
+                    return { message: "Hãy chọn đáp án chính xác !" };
+                else {
+                    newData.question = title;
+                    newData.arrayAnswer = [answer1, answer2, answer3, answer4];
+                    newData.correctAnswer = data[correctAnswer];
+                }
+            }
+        }
+        return [
+            {
+                question: newData.question,
+                arrayAnswer: newData.arrayAnswer,
+                correctAnswer: newData.correctAnswer,
+            },
+        ];
     }
-    // ==============================PASSWORD================================
-    if (!correctAnswer) {
-        errors.correctAnswer = "Hãy nhập đáp án là số nguyên";
-    }
+};
 
-    if (classQuestion === 0) {
-        errors.classQuestion = "Hãy chọn lớp mà bạn muốn thêm câu hỏi";
+const validationAnswerQuestion = (answer1, answer2, answer3, answer4) => {
+    let errors = null;
+    if (!answer1 || !answer2 || !answer3 || !answer4) {
+        errors = "Hãy nhập đầy đủ các đáp án";
+    } else if (
+        typeof answer1 === "undefined" ||
+        answer1.trim() === "" ||
+        typeof answer2 === "undefined" ||
+        answer2.trim() === "" ||
+        typeof answer3 === "undefined" ||
+        answer3.trim() === "" ||
+        typeof answer4 === "undefined" ||
+        answer4.trim() === ""
+    ) {
+        errors = "Một số đáp án bạn nhập không hợp lệ, hãy kiểm tra lại !";
     }
 
     return errors;
 };
+const validationClassAndTitle = (classQuestion, title) => {
+    let errors = null;
 
+    if (!title) {
+        errors = "Hãy nhập đề bài";
+    } else if (typeof title === "undefined" || title.trim() === "") {
+        errors = "Đề bài bạn nhập không hợp lệ, hãy kiểm tra lại !";
+    }
+    if (classQuestion === 0) {
+        errors = "Hãy chọn lớp cho câu hỏi này";
+    }
+
+    return errors;
+};
+const validationCorrectAnswer = (correctAnswer) => {
+    let errors = null;
+    if (!correctAnswer) {
+        errors = "Hãy điền đáp án chính xác";
+    } else if (!Number.isInteger(Number(correctAnswer))) {
+        errors =
+            "Hãy nhập đáp án chính xác là 1 chữ số, để chúng tôi có thể random các đáp án khác giúp bạn !";
+    }
+
+    return errors;
+};
 export const validationIdQuestion = (idQuestion) => {
-    const errors = {};
+    let errors = null;
     if (!idQuestion) {
-        errors.idQuestion = "Hãy nhập ID câu hỏi";
+        errors = "Hãy nhập ID câu hỏi";
     } else if (typeof idQuestion === "undefined") {
-        errors.idQuestion = "ID không hợp lệ";
+        errors = "ID không hợp lệ";
     }
     return errors;
 };

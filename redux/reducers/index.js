@@ -1,7 +1,6 @@
 import { persistReducer } from "redux-persist";
 import { AsyncStorage } from "react-native";
 import * as CONSTANTS from "../constants";
-import { filterForDuplicateValues } from "../../untils/functions";
 
 const initialState = {
     accessToken: null,
@@ -10,20 +9,42 @@ const initialState = {
     ranksInClass: [],
     user: null,
     loading: false,
-    isDarkTheme: false
+    isDarkTheme: false,
+    role: null,
+    reports: null,
 };
 const persistCartConfig = {
     key: "state",
     storage: AsyncStorage,
-    whitelist: ["accessToken", "questions", "ranks", "user", "isDarkTheme"],
+    whitelist: [
+        "role",
+        "accessToken",
+        "questions",
+        "ranks",
+        "user",
+        "isDarkTheme",
+    ],
 };
 
 const rootReducers = (state = initialState, action) => {
     switch (action.type) {
+        case CONSTANTS.LOG_OUT: {
+            return {
+                ...state,
+                accessToken: null,
+                role: null,
+            };
+        }
         case CONSTANTS.SHOW_LOADING: {
             return {
                 ...state,
                 loading: true,
+            };
+        }
+        case CONSTANTS.HIDE_LOADING: {
+            return {
+                ...state,
+                loading: false,
             };
         }
         case CONSTANTS.TOGLE_THEME: {
@@ -33,17 +54,25 @@ const rootReducers = (state = initialState, action) => {
                 isDarkTheme: !isDarkTheme,
             };
         }
-        case CONSTANTS.HIDE_LOADING: {
-            return {
-                ...state,
-                loading: false,
-            };
-        }
         case CONSTANTS.SET_TOKEN: {
             const { accessToken } = action.payload;
             return {
                 ...state,
                 accessToken: accessToken,
+            };
+        }
+        case CONSTANTS.SET_REPORTS: {
+            const { reports } = action.payload;
+            return {
+                ...state,
+                reports: reports,
+            };
+        }
+        case CONSTANTS.SET_ROLE: {
+            const { role } = action.payload;
+            return {
+                ...state,
+                role: role,
             };
         }
         case CONSTANTS.SET_QUESTIONS: {

@@ -10,12 +10,13 @@ const Success = ({ message, styleProps }) => {
 };
 const styles = StyleSheet.create({
     success: {
-        padding: 10,
+        padding: 7,
+        paddingLeft: 20,
+        paddingRight: 20,
         borderWidth: 3,
         borderColor: "seagreen",
         backgroundColor: "#fff",
         borderRadius: 10,
-        width: "80%",
     },
     successTitle: {
         color: "#fff",

@@ -21,6 +21,7 @@ const useConnect = () => {
     const mapState = {
         isDarkTheme: useSelector((state) => state.isDarkTheme),
         user: useSelector((state) => state.user),
+        role: useSelector((state) => state.role),
     };
     const dispatch = useDispatch();
     const mapDispatch = React.useMemo(
@@ -37,9 +38,7 @@ const useConnect = () => {
     };
 };
 export function DrawerContent(props) {
-    const paperTheme = useTheme();
-    const { onTogleTheme, isDarkTheme, onLogout, user } = useConnect();
-    const { fullName } = user;
+    const { onTogleTheme, isDarkTheme, onLogout, user, role } = useConnect();
     return (
         <View style={{ flex: 1 }}>
             <DrawerContentScrollView {...props}>
@@ -53,9 +52,21 @@ export function DrawerContent(props) {
                             }}
                         >
                             <Avatar.Image source={AvatarImage} size={50} />
-                            <Title style={styles.title}>
-                                {fullName}
-                            </Title>
+                            <View
+                                style={{
+                                    marginLeft: 10,
+                                    flexDirection: "column",
+                                }}
+                            >
+                                <Title style={styles.title}>
+                                    {(user && user.fullName) || null}
+                                </Title>
+                                {role === "admin" && (
+                                    <Caption style={styles.caption}>
+                                        👋Chào mừng admin !
+                                    </Caption>
+                                )}
+                            </View>
                         </View>
                     </View>
 
@@ -70,20 +81,7 @@ export function DrawerContent(props) {
                             )}
                             label="Trang chủ"
                             onPress={() => {
-                                props.navigation.navigate("Home");
-                            }}
-                        />
-                        <DrawerItem
-                            icon={({ color, size }) => (
-                                <Icon
-                                    name="account-outline"
-                                    color={color}
-                                    size={size}
-                                />
-                            )}
-                            label="Tài khoản"
-                            onPress={() => {
-                                props.navigation.navigate("Account");
+                                props.navigation.navigate("HomePage");
                             }}
                         />
                         <DrawerItem
@@ -117,9 +115,9 @@ export function DrawerContent(props) {
                         <TouchableRipple
                             onPress={() => {
                                 onTogleTheme();
-                                setTimeout(()=>{
+                                setTimeout(() => {
                                     props.navigation.toggleDrawer();
-                                },400);
+                                }, 400);
                             }}
                         >
                             <View style={styles.preference}>
@@ -138,9 +136,8 @@ export function DrawerContent(props) {
                         <Icon name="exit-to-app" color={color} size={size} />
                     )}
                     label="Đăng xuất"
-                    onPress={()=>{
-                        onLogout(),
-                        props.navigation.toggleDrawer();
+                    onPress={() => {
+                        onLogout(), props.navigation.toggleDrawer();
                     }}
                 />
             </Drawer.Section>
@@ -159,9 +156,8 @@ const styles = StyleSheet.create({
         elevation: 1,
     },
     title: {
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: "bold",
-        marginLeft: 10,
     },
     caption: {
         fontSize: 14,

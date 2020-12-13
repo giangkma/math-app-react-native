@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import QuestionComponent from "../../screens/question";
 import {
     searchQuestionsThunk,
@@ -7,21 +7,28 @@ import {
     uploadQuestionThunk,
 } from "../../redux/thunk";
 import {
+    validateQuestionPage,
+    validationAnswerQuestion,
+    validationClassAndTitle,
     validationFormQuestion,
     validationIdQuestion,
 } from "../../untils/validation";
-
+import {
+    randomArrayAnswer,
+    showAlert,
+    showToastAndroid,
+} from "../../untils/functions";
 
 // connect redux
 const useConnect = () => {
     const dispatch = useDispatch();
     const mapDispatch = React.useMemo(
         () => ({
-            onUploadQuestionThunk: (question) =>
-                dispatch(uploadQuestionThunk(question)),
+            onUploadQuestionThunk: (question, className) =>
+                dispatch(uploadQuestionThunk(question, className)),
             onSearchQuestionThunk: (id) => dispatch(searchQuestionsThunk(id)),
-            onUpdateQuestionThunk: (question, id) =>
-                dispatch(updateQuestionThunk(question, id)),
+            onUpdateQuestionThunk: (question, id, className) =>
+                dispatch(updateQuestionThunk(question, id, className)),
         }),
         [dispatch]
     );
@@ -35,61 +42,77 @@ const QuestionContainer = ({ navigation, backHome, numQuestions }) => {
         onUploadQuestionThunk,
         onSearchQuestionThunk,
         onUpdateQuestionThunk,
+        accessToken,
     } = useConnect();
     const [title, setTitle] = useState(null);
     const [correctAnswer, setCorrectAnswer] = useState(null);
+    const [arrayAnswer, setArrayAnswer] = useState(null);
     const [classQuestion, setClassQuestion] = useState(0);
 
     const [errors, setErrors] = React.useState(null);
     const [isAddQuestion, setIsAddQuestion] = React.useState(true);
     const [idQuestionEdit, setIdQuestionEdit] = React.useState(null);
+    const [isRandomArrayAsnwer, setIsRandomArrayAsnwer] = React.useState(false);
+
+    const handleRandomArrayAnswer = () => {
+        setIsRandomArrayAsnwer(!isRandomArrayAsnwer);
+        setCorrectAnswer(null);
+        setErrors(null);
+    };
 
     const onResetForm = () => {
         setTitle(null);
         setClassQuestion(null);
         setCorrectAnswer(null);
         setIdQuestionEdit(null);
+        setErrors(null);
+        setArrayAnswer(null);
     };
     const toggleFormAddQuestion = () => {
-        setIsAddQuestion(!isAddQuestion);
         onResetForm();
+        setIsAddQuestion(!isAddQuestion);
     };
     const onSelectClassToAdd = (value) => {
         setClassQuestion(value);
     };
     const onSearchQuestion = async () => {
         const err = validationIdQuestion(idQuestionEdit);
-        if (err.idQuestion) {
+        if (err) {
             setErrors(err);
         } else {
             setErrors(null);
             const res = await onSearchQuestionThunk(idQuestionEdit);
             if (res) {
-                setTitle(res.question);
-                setClassQuestion(res.class);
-                setCorrectAnswer(String(res.correctAnswer));
+                const { arrayAnswer, correctAnswer, question, classId } = res;
+                const newArrayAnswer = JSON.parse(arrayAnswer);
+                const indexCorrectAnswer = newArrayAnswer.indexOf(
+                    correctAnswer
+                );
+                setArrayAnswer(newArrayAnswer);
+                setTitle(question);
+                setClassQuestion(classId);
+                setCorrectAnswer(`answer${indexCorrectAnswer + 1}`);
             }
         }
     };
-    const onSubmitFormQuestion = async () => {
-        const numberCorrectAnswer = parseInt(correctAnswer);
-        const err = validationFormQuestion(
+    const onSubmitFormQuestion = async (data) => {
+        const result = validateQuestionPage(
+            data,
+            classQuestion,
             title,
-            numberCorrectAnswer,
-            classQuestion
+            correctAnswer,
+            isRandomArrayAsnwer
         );
-        if (err.title || err.correctAnswer || err.classQuestion) {
-            setErrors(err);
-        } else {
+        if (result.message) setErrors(result.message);
+        else {
             setErrors(null);
-            const data = JSON.stringify({
-                class: classQuestion,
-                question: title,
-                correctAnswer: numberCorrectAnswer,
-            });
-            const res = idQuestionEdit
-                ? await onUpdateQuestionThunk(data, idQuestionEdit)
-                : await onUploadQuestionThunk(data);
+            const res = !isAddQuestion
+                ? await onUpdateQuestionThunk(
+                      result[0],
+                      idQuestionEdit,
+                      classQuestion
+                  )
+                : await onUploadQuestionThunk(result, classQuestion);
             if (res) {
                 setTitle(null);
                 setCorrectAnswer(null);
@@ -105,6 +128,7 @@ const QuestionContainer = ({ navigation, backHome, numQuestions }) => {
                 numQuestions={numQuestions}
                 setTitle={setTitle}
                 title={title}
+                arrayAnswer={arrayAnswer}
                 correctAnswer={correctAnswer}
                 setCorrectAnswer={setCorrectAnswer}
                 onSubmitFormQuestion={onSubmitFormQuestion}
@@ -114,6 +138,8 @@ const QuestionContainer = ({ navigation, backHome, numQuestions }) => {
                 isAddQuestion={isAddQuestion}
                 setIdQuestionEdit={setIdQuestionEdit}
                 onSearchQuestion={onSearchQuestion}
+                isRandomArrayAsnwer={isRandomArrayAsnwer}
+                handleRandomArrayAnswer={handleRandomArrayAnswer}
             />
         </>
     );

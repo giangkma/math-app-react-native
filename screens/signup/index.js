@@ -6,15 +6,15 @@ import {
     ScrollView,
     StyleSheet,
     Text,
-
     TouchableOpacity,
-    View
+    View,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
 import Feather from "react-native-vector-icons/Feather";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import InputReactHook from "../../commons/input";
 import { DEFAULT_COLOR } from "../../untils/constants";
+import { commonStyles } from "../../untils/styles/global";
 
 const LoginInScreen = ({
     navigation,
@@ -27,7 +27,7 @@ const LoginInScreen = ({
     control,
     errors,
     handleShowConfirmPassword,
-    isShowConfirmPassword
+    isShowConfirmPassword,
 }) => {
     return (
         <View style={styles.container}>
@@ -70,7 +70,7 @@ const LoginInScreen = ({
                             control={control}
                             defaultValue={""}
                             style={[
-                                styles.textInput,
+                                commonStyles.textInput,
                                 {
                                     color: colors.text,
                                 },
@@ -105,7 +105,7 @@ const LoginInScreen = ({
                             control={control}
                             defaultValue={""}
                             style={[
-                                styles.textInput,
+                                commonStyles.textInput,
                                 {
                                     color: colors.text,
                                 },
@@ -141,7 +141,7 @@ const LoginInScreen = ({
                             control={control}
                             defaultValue={""}
                             style={[
-                                styles.textInput,
+                                commonStyles.textInput,
                                 {
                                     color: colors.text,
                                 },
@@ -188,7 +188,7 @@ const LoginInScreen = ({
                             control={control}
                             defaultValue={""}
                             style={[
-                                styles.textInput,
+                                commonStyles.textInput,
                                 {
                                     color: colors.text,
                                 },
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
         justifyContent: "flex-end",
         paddingHorizontal: 20,
         paddingBottom: 30,
-        marginTop: -70
+        marginTop: -70,
     },
     footer: {
         flex: 3,
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
         marginTop: Platform.OS === "ios" ? 0 : -12,
         paddingLeft: 10,
         color: "#05375a",
-        fontSize: 16
+        fontSize: 16,
     },
     errorMsg: {
         color: "#FF0000",

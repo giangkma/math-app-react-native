@@ -8,14 +8,7 @@ import ImageNodata from "../../assets/noDataFound.png";
 import { filterForDuplicateValues } from "../../untils/functions";
 import { commonStyles } from "../../untils/styles/global";
 
-const RankComponent = ({
-    navigation,
-    backHome,
-    ranksInClass,
-    nameClassRanks,
-    selectClassRanks,
-    onUpdateDataRank,
-}) => {
+const RankComponent = ({ ranksInClass, nameClassRanks, selectClassRanks }) => {
     const { colors } = useTheme();
     return (
         <>
@@ -84,10 +77,10 @@ const RankComponent = ({
                                         selectClassRanks(itemValue)
                                     }
                                 >
-                                    <Picker.Item
+                                    {/* <Picker.Item
                                         label="Xếp hạng tổng hợp"
                                         value={0}
-                                    />
+                                    /> */}
                                     <Picker.Item label="Lớp 1" value={1} />
                                     <Picker.Item label="Lớp 2" value={2} />
                                     <Picker.Item label="Lớp 3" value={3} />
@@ -210,7 +203,7 @@ const RankComponent = ({
                                                     color: colors.text,
                                                 }}
                                             >
-                                                {item.name}
+                                                {item.fullName}
                                             </Text>
                                             {nameClassRanks !== 0 && (
                                                 <Text
@@ -219,7 +212,7 @@ const RankComponent = ({
                                                         color: colors.text,
                                                     }}
                                                 >
-                                                    {item.class}
+                                                    {nameClassRanks}
                                                 </Text>
                                             )}
                                             <Text

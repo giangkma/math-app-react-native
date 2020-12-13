@@ -1,0 +1,69 @@
+{
+  "users": [
+    {
+      "username": "admin",
+      "password": "admin",
+      "fullName": "admin"
+    }
+  ],
+  "class1": [
+    {
+      "question": "class1",
+      "arrayAnswer": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "correctAnswer": 4
+    }
+  ],
+  "class2": [
+    {
+      "question": "class2",
+      "arrayAnswer": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "correctAnswer": 4
+    }
+  ],
+  "class3": [
+    {
+      "question": "class3",
+      "arrayAnswer": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "correctAnswer": 4
+    }
+  ],
+  "class4": [
+    {
+      "question": "class4",
+      "arrayAnswer": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "correctAnswer": 4
+    }
+  ],
+  "class5": [
+    {
+      "question": "class5",
+      "arrayAnswer": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "correctAnswer": 4
+    }
+  ]
+}

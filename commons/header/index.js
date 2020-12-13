@@ -1,18 +1,7 @@
 import * as React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-
-const HeaderComponent = ({
-    navigation,
-    className,
-    // backHome,
-    numQuestions,
-    // hideNumQuestions,
-    // showButtonUpdateRank,
-    // onUpdateDataRank,
-    // isStart,
-    // onEnd,
-}) => {
+const HeaderComponent = ({ navigation }) => {
     return (
         <View
             style={{
@@ -26,7 +15,10 @@ const HeaderComponent = ({
                 <Icon style={{ fontSize: 24, color: "#fff" }} name="bars" />
             </TouchableOpacity>
             <View>
-                <Text style={{ color: "#fff", fontSize: 22, marginRight: 15 }}>{"math"}</Text>
+                <Image
+                    style={{ width: 90, height: 35, marginRight: 20 }}
+                    source={require("../../assets/logo.png")}
+                />
             </View>
             <View></View>
         </View>

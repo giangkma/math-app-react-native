@@ -1,21 +1,20 @@
 import * as React from "react";
 import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { actionFilterRanksInClass } from "../../redux/actions";
 import { fetchRanksThunk } from "../../redux/thunk";
 import RankComponent from "../../screens/rank";
-import { showAlert } from "../../untils/functions";
+import { showToastAndroid } from "../../untils/functions";
 // connect redux
 const useConnect = () => {
     const mapState = {
         ranksInClass: useSelector((state) => state.ranksInClass),
+        accessToken: useSelector((state) => state.accessToken),
     };
     const dispatch = useDispatch();
     const mapDispatch = React.useMemo(
         () => ({
-            onFetchRanksThunk: () => dispatch(fetchRanksThunk()),
-            onFilterRanksInClassThunk: (className) =>
-                dispatch(actionFilterRanksInClass(className)),
+            onFetchRanksThunk: (className, accessToken) =>
+                dispatch(fetchRanksThunk(className, accessToken)),
         }),
         [dispatch]
     );
@@ -26,12 +25,8 @@ const useConnect = () => {
     };
 };
 const RankContainer = ({ navigation }) => {
-    const {
-        onFetchRanksThunk,
-        ranksInClass,
-        onFilterRanksInClassThunk,
-    } = useConnect();
-    const [nameClassRanks, setNameClassRanks] = React.useState(0);
+    const { onFetchRanksThunk, ranksInClass, accessToken } = useConnect();
+    const [nameClassRanks, setNameClassRanks] = React.useState(1);
     const backHome = useCallback(async () => {
         navigation.navigate("Trang chủ");
         setNameClassRanks(0);
@@ -39,22 +34,20 @@ const RankContainer = ({ navigation }) => {
     const selectClassRanks = useCallback(
         (nameClass) => {
             setNameClassRanks(nameClass);
-            onFilterRanksInClassThunk(nameClass);
         },
         [ranksInClass]
     );
     const onUpdateDataRank = async () => {
         const res = await onFetchRanksThunk();
-        onFilterRanksInClassThunk(nameClassRanks);
         if (res) {
-            showAlert("Cập nhật thành công !");
+            showToastAndroid("Cập nhật thành công !");
         }
     };
     useEffect(() => {
         (async () => {
-            await onFetchRanksThunk();
+            await onFetchRanksThunk(nameClassRanks, accessToken);
         })();
-    }, []);
+    }, [nameClassRanks, accessToken]);
     return (
         <RankComponent
             navigation={navigation}

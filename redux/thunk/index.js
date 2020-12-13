@@ -1,143 +1,201 @@
-import { showAlert } from "../../untils/functions";
 import {
-    actionSetQuestions,
-    actionSetRanks,
-    actionSetToken,
-    actionSetUser,
-    actionUploadQuestionSuccess,
-    actionUpdateRanksSuccess,
-    actionUploadRanksSuccess,
-    actionShowLoading,
-    actionHideLoading,
-} from "../actions";
-import {
-    APIfetchQuestions,
+    APIfetchAllQuestionsInClass,
+    APIfetchOneQuestion,
     APIfetchRanks,
-    APIupdateQuestion,
-    APIuploadQuestion,
-    APIupdateRankUser,
+    APIgetListUserReport,
+    APIgetProfile,
+    APIlogin,
     APIpostRankUser,
-    APIfetchUsers,
-    APIupdateUser
+    APIsignup,
+    APIupdateQuestion,
+    APIupdateRankUser,
+    APIupdateUser,
+    APIuploadQuestion,
+    APIuserReportQuestion,
 } from "../../apis";
 import { STATUS_CODE } from "../../untils/constants";
+import {
+    filterSumUserReportQuestion,
+    showAlert,
+    showToastAndroid,
+} from "../../untils/functions";
+import {
+    actionHideLoading,
+    actionSetQuestions,
+    actionSetRanks,
+    actionSetReports,
+    actionSetRole,
+    actionSetToken,
+    actionSetUser,
+    actionShowLoading,
+    actionUpdateRanksSuccess,
+    actionUploadQuestionSuccess,
+    actionUploadRanksSuccess,
+} from "../actions";
 
 export const loginThunk = (username, password) => {
     return async (dispatch) => {
         dispatch(actionShowLoading());
-        const res = await APIfetchUsers();
+        const res = await APIlogin(username, password);
         const { status, data } = res;
         if (status === STATUS_CODE.SUCCESS) {
-            const user = await data.find(
-                (user) =>
-                    user.username === username && user.password === password
-            );
-            if (user) {
-                setTimeout(async () => {
-                    await dispatch(actionSetUser(user));
-                    if ((username === "admin")) {
-                        await dispatch(actionSetToken("admin"));
-                    } else {
-                        await dispatch(actionSetToken("user"));
-                    }
-                    dispatch(actionHideLoading());
-                    showAlert("Đăng nhập thành công !");
-                    return true;
-                }, 2000);
+            if (username === "admin") {
+                dispatch(actionSetRole("admin"));
             } else {
-                setTimeout(() => {
-                    dispatch(actionHideLoading());
-                    showAlert("Tài khoản hoặc mật khẩu không chính xác !");
-                    return false;
-                }, 2000);
+                dispatch(actionSetRole("user"));
             }
-        }
-    };
-};
-
-export const fetchInformationUserThunk = () => {
-    return async (dispatch, getState) => {
-        const user = await getState().user;
-        const res = await APIfetchUsers();
-        const { status, data } = res;
-        if (status === STATUS_CODE.SUCCESS) {
-            const newInforUser = data.find((item) => item.id === user.id);
-            dispatch(actionSetUser(newInforUser));
+            const { accessToken } = data;
+            dispatch(actionSetToken(accessToken));
+            dispatch(actionHideLoading());
+            showToastAndroid("Đăng nhập thành công !");
+            return true;
         } else {
-            showAlert("Lấy dữ liệu người dùng thất bại !");
+            dispatch(actionHideLoading());
+            showToastAndroid("Tài khoản hoặc mật khẩu không chính xác !");
+            return false;
         }
     };
 };
-
-export const fetchQuestionsThunk = () => {
+export const singupThunk = (username, password, fullName) => {
     return async (dispatch) => {
         dispatch(actionShowLoading());
-        const res = await APIfetchQuestions();
+        const res = await APIsignup(username, password, fullName);
+        const { status } = res;
+        if (status === STATUS_CODE.SUCCESS) {
+            dispatch(actionHideLoading());
+            showToastAndroid("Đăng ký tài khoản thành công !");
+            return true;
+        } else {
+            dispatch(actionHideLoading());
+            showToastAndroid("Tài khoản đã tồn tại !");
+            return false;
+        }
+    };
+};
+export const fetchInformationUserThunk = () => {
+    return async (dispatch, getState) => {
+        const accessToken = getState().accessToken;
+        const res = await APIgetProfile(accessToken);
+        const { status, data } = res;
+        if (status === STATUS_CODE.SUCCESS) {
+            dispatch(actionSetUser(data));
+        } else {
+            showToastAndroid("Lấy dữ liệu người dùng thất bại !");
+        }
+    };
+};
+export const fetchListUserReportThunk = () => {
+    return async (dispatch) => {
+        const res = await APIgetListUserReport();
+        const { status, data } = res;
+        if (status === STATUS_CODE.SUCCESS) {
+            const newData = filterSumUserReportQuestion(data);
+            dispatch(actionSetReports(newData));
+        } else {
+            showToastAndroid("Lấy dữ liệu người dùng thất bại !");
+        }
+    };
+};
+
+export const fetchQuestionsThunk = (className) => {
+    return async (dispatch, getState) => {
+        dispatch(actionShowLoading());
+        const accessToken = getState().accessToken;
+        const res = await APIfetchAllQuestionsInClass(className, accessToken);
         const { status, data } = res;
         if (status === STATUS_CODE.SUCCESS) {
             dispatch(actionSetQuestions(data));
         } else {
-            showAlert("Lấy dữ liệu câu hỏi thất bại !");
+            showToastAndroid("Lấy dữ liệu câu hỏi thất bại !");
+        }
+        dispatch(actionHideLoading());
+    };
+};
+export const userReportQuestionThunk = (idQuestion, className, user) => {
+    return async (dispatch) => {
+        dispatch(actionShowLoading());
+        const { fullName } = user;
+        const res = await APIuserReportQuestion(
+            idQuestion,
+            className,
+            fullName
+        );
+        const { status } = res;
+        if (status === STATUS_CODE.CREATED) {
+            showAlert(
+                "Cảm ơn bạn đã báo cáo cho chúng tôi ! chúng tôi sẽ xem sét câu hỏi này sớm nhất có thể. Hãy tiếp tục làm bài nhé !",
+                "Báo cáo thành công ✔️"
+            );
+        } else {
+            showToastAndroid("Đã xảy ra lỗi !");
         }
         dispatch(actionHideLoading());
     };
 };
 
 export const searchQuestionsThunk = (id) => {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
         dispatch(actionShowLoading());
-        const res = await APIfetchQuestions(id);
+        const accessToken = getState().accessToken;
+        const res = await APIfetchOneQuestion(id, accessToken);
         const { status, data } = res;
         if (status === STATUS_CODE.SUCCESS) {
             dispatch(actionHideLoading());
             return data;
         } else {
             dispatch(actionHideLoading());
-            showAlert("Không tìm thấy câu hỏi này !");
+            showToastAndroid("Không tìm thấy câu hỏi này !");
             return false;
         }
     };
 };
 
-export const uploadQuestionThunk = (question) => {
-    return async (dispatch) => {
+export const uploadQuestionThunk = (question, className) => {
+    return async (dispatch, getState) => {
         dispatch(actionShowLoading());
-        const res = await APIuploadQuestion(question);
+        const accessToken = getState().accessToken;
+        const res = await APIuploadQuestion(question, className, accessToken);
         const { status, data } = res;
         if (status === STATUS_CODE.CREATED) {
-            showAlert("Thêm thành công !");
+            showToastAndroid("Thêm thành công !");
             dispatch(actionUploadQuestionSuccess(data));
             dispatch(actionHideLoading());
             return true;
         } else {
             dispatch(actionHideLoading());
-            showAlert("Đã xảy ra lỗi !");
+            showToastAndroid("Đã xảy ra lỗi !");
             return false;
         }
     };
 };
 
-export const updateQuestionThunk = (question, id) => {
-    return async (dispatch) => {
+export const updateQuestionThunk = (question, id, className) => {
+    return async (dispatch, getState) => {
         dispatch(actionShowLoading());
-        const res = await APIupdateQuestion(question, id);
+        const accessToken = getState().accessToken;
+        const res = await APIupdateQuestion(
+            question,
+            id,
+            className,
+            accessToken
+        );
         const { status } = res;
-        if (status === STATUS_CODE.SUCCESS) {
-            showAlert("Cập nhật thành công !");
+        if (status === 204) {
+            showToastAndroid("Cập nhật thành công !");
             dispatch(actionHideLoading());
             return true;
         } else {
             dispatch(actionHideLoading());
-            showAlert("Đã xảy ra lỗi !");
+            showToastAndroid("Đã xảy ra lỗi !");
             return false;
         }
     };
 };
 
-export const fetchRanksThunk = () => {
+export const fetchRanksThunk = (className, accessToken) => {
     return async (dispatch) => {
         dispatch(actionShowLoading());
-        const res = await APIfetchRanks();
+        const res = await APIfetchRanks(className, accessToken);
         const { status, data } = res;
         if (status === STATUS_CODE.SUCCESS) {
             dispatch(actionSetRanks(data));
@@ -145,7 +203,7 @@ export const fetchRanksThunk = () => {
             return true;
         } else {
             dispatch(actionHideLoading());
-            showAlert("Lấy dữ liệu xếp hạng thất bại !");
+            showToastAndroid("Lấy dữ liệu xếp hạng thất bại !");
             return false;
         }
     };
@@ -162,10 +220,7 @@ export const checkInformationThunk = (fullName, password) => {
                 //trường hợp trùng tên || ng dùng nhập sai pass
                 userAlreadyExists = item;
                 return false;
-            } else if (
-                item.name === fullName &&
-                item.password !== password
-            ) {
+            } else if (item.name === fullName && item.password !== password) {
                 //trường hợp trùng tên || ng dùng nhập sai pass
                 userDuplicateName = item;
                 return false;
@@ -187,71 +242,37 @@ export const checkInformationThunk = (fullName, password) => {
     };
 };
 
-export const updateRanksThunk = (
-    fullName,
-    password,
-    classUser,
-    scoreUser
-) => {
+export const updateRanksThunk = (score, className) => {
     return async (dispatch, getState) => {
         dispatch(actionShowLoading());
-        const ranks = await getState().ranks;
-        const user = ranks.find(
-            (item) =>
-                item.name === fullName &&
-                item.password === password &&
-                item.class === classUser
-        );
-        if (user) {
-            //tìm thấy user trong Ranks => update score cho user
-            const { id, score } = user;
-            const newScore = score + scoreUser;
-            const res = await APIupdateRankUser({ score: newScore }, id);
-            const { status, data } = res;
+        const accessToken = getState().accessToken;
+        const res = await APIupdateRankUser(score, className, accessToken);
+        const { status } = res;
+        if (status === 204) {
+            showToastAndroid("Cập nhật xếp hạng thành công !");
             dispatch(actionHideLoading());
-            if (status === STATUS_CODE.SUCCESS) {
-                dispatch(actionUpdateRanksSuccess(data));
-                showAlert("Cập nhật xếp hạng thành công !");
-                return true;
-            } else {
-                showAlert("Đã xảy ra lỗi !");
-                return false;
-            }
+            return true;
         } else {
-            //không tìm thấy => post score cho user
-            const res = await APIpostRankUser({
-                name: fullName,
-                password: password,
-                score: scoreUser,
-                class: classUser,
-            });
-            const { status, data } = res;
             dispatch(actionHideLoading());
-            if (status === STATUS_CODE.CREATED) {
-                showAlert("Cập nhật xếp hạng thành công !");
-                dispatch(actionUploadRanksSuccess(data));
-                return true;
-            } else {
-                showAlert("Đã xảy ra lỗi !");
-                return false;
-            }
+            showToastAndroid("Đã xảy ra lỗi !");
+            return false;
         }
     };
 };
 
 export const updateInformationUserThunk = (user, id) => {
-    return async (dispatch, getState) => {
+    return async (dispatch) => {
         dispatch(actionShowLoading());
         const res = await APIupdateUser(user, id);
         const { status, data } = res;
         if (status === STATUS_CODE.SUCCESS) {
-            showAlert("Thay đổi mật khẩu thành công !");
+            showToastAndroid("Thay đổi mật khẩu thành công !");
             dispatch(actionSetUser(data));
             dispatch(actionHideLoading());
             return true;
         } else {
             dispatch(actionHideLoading());
-            showAlert("Đã xảy ra lỗi !");
+            showToastAndroid("Đã xảy ra lỗi !");
             return false;
         }
     };

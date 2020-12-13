@@ -8,6 +8,14 @@ export const actionSetToken = (accessToken) => {
         },
     };
 };
+export const actionSetRole = (role) => {
+    return {
+        type: CONSTANTS.SET_ROLE,
+        payload: {
+            role,
+        },
+    };
+};
 
 export const actionSetQuestions = (data) => {
     return {
@@ -38,10 +46,7 @@ export const actionUpdateQuestionSuccess = (question) => {
 
 export const actionLogout = () => {
     return {
-        type: CONSTANTS.SET_TOKEN,
-        payload: {
-            accessToken: null,
-        },
+        type: CONSTANTS.LOG_OUT,
     };
 };
 
@@ -50,6 +55,15 @@ export const actionSetRanks = (ranks) => {
         type: CONSTANTS.SET_RANKS,
         payload: {
             ranks,
+        },
+    };
+};
+
+export const actionSetReports = (reports) => {
+    return {
+        type: CONSTANTS.SET_REPORTS,
+        payload: {
+            reports,
         },
     };
 };
@@ -101,7 +115,6 @@ export const actionHideLoading = () => {
         type: CONSTANTS.HIDE_LOADING,
     };
 };
-
 
 export const actionTogleTheme = () => {
     return {

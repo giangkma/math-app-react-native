@@ -1,6 +1,13 @@
+import { Platform } from "react-native";
 import { DEFAULT_COLOR } from "../constants";
 
 export const commonStyles = {
+    textInput: {
+        flex: 1,
+        marginTop: Platform.OS === "ios" ? 0 : -12,
+        paddingLeft: 10,
+        color: "#05375a",
+    },
     image: {
         flex: 1,
         height: null,
@@ -44,5 +51,5 @@ export const commonStyles = {
         marginTop: 10,
         marginBottom: 5,
         fontSize: 18,
-    }
+    },
 };

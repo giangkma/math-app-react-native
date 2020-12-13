@@ -7,7 +7,6 @@ import DoingScreens from "../../container/doing";
 import HomeScreens from "../../container/home";
 import RankScreens from "../../container/rank";
 import SupportScreens from "../../container/support";
-import AccountScreens from "../../container/account";
 import QuestionScreens from "../../container/question";
 import { DEFAULT_COLOR } from "../../untils/constants";
 
@@ -28,7 +27,7 @@ const HomeStackScreen = ({ navigation }) => {
     return (
         <HomeStack.Navigator>
             <HomeStack.Screen
-                name="Home"
+                name="HomePage"
                 component={HomeScreens}
                 options={{
                     headerStyle: {
@@ -43,7 +42,7 @@ const HomeStackScreen = ({ navigation }) => {
                     headerTitleStyle: {
                         color: "#fff",
                     },
-                    headerTintColor: '#fff',
+                    headerTintColor: "#fff",
                 }}
             />
             <HomeStack.Screen
@@ -56,8 +55,9 @@ const HomeStackScreen = ({ navigation }) => {
                     },
                     headerTitleStyle: {
                         color: "#fff",
+                        marginLeft: -25,
                     },
-                    headerTintColor: '#fff',
+                    headerTintColor: "#fff",
                 }}
             />
             <HomeStack.Screen
@@ -70,8 +70,9 @@ const HomeStackScreen = ({ navigation }) => {
                     },
                     headerTitleStyle: {
                         color: "#fff",
+                        marginLeft: -25,
                     },
-                    headerTintColor: '#fff',
+                    headerTintColor: "#fff",
                 })}
             />
             <HomeStack.Screen
@@ -84,22 +85,9 @@ const HomeStackScreen = ({ navigation }) => {
                     },
                     headerTitleStyle: {
                         color: "#fff",
+                        marginLeft: -25,
                     },
-                    headerTintColor: '#fff',
-                }}
-            />
-            <HomeStack.Screen
-                name="Account"
-                component={AccountScreens}
-                options={{
-                    title: "Thông tin cá nhân",
-                    headerStyle: {
-                        backgroundColor: DEFAULT_COLOR,
-                    },
-                    headerTitleStyle: {
-                        color: "#fff",
-                    },
-                    headerTintColor: '#fff',
+                    headerTintColor: "#fff",
                 }}
             />
             <HomeStack.Screen
@@ -113,7 +101,7 @@ const HomeStackScreen = ({ navigation }) => {
                     headerTitleStyle: {
                         color: "#fff",
                     },
-                    headerTintColor: '#fff',
+                    headerTintColor: "#fff",
                 }}
             />
         </HomeStack.Navigator>
