@@ -97,7 +97,7 @@ export function DrawerContent(props) {
                                 props.navigation.navigate("Rank");
                             }}
                         />
-                        <DrawerItem
+                        {/* <DrawerItem
                             icon={({ color, size }) => (
                                 <Icon
                                     name="account-check-outline"
@@ -109,7 +109,7 @@ export function DrawerContent(props) {
                             onPress={() => {
                                 props.navigation.navigate("Support");
                             }}
-                        />
+                        /> */}
                     </Drawer.Section>
                     <Drawer.Section title="Tùy chỉnh">
                         <TouchableRipple

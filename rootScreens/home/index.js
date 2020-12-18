@@ -90,7 +90,7 @@ const HomeStackScreen = ({ navigation }) => {
                     headerTintColor: "#fff",
                 }}
             />
-            <HomeStack.Screen
+            {/* <HomeStack.Screen
                 name="Support"
                 component={SupportScreens}
                 options={{
@@ -103,7 +103,7 @@ const HomeStackScreen = ({ navigation }) => {
                     },
                     headerTintColor: "#fff",
                 }}
-            />
+            /> */}
         </HomeStack.Navigator>
     );
 };

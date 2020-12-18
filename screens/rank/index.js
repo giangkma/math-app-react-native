@@ -26,21 +26,6 @@ const RankComponent = ({ ranksInClass, nameClassRanks, selectClassRanks }) => {
                     >
                         <View
                             style={{
-                                padding: 10,
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    color: colors.text,
-                                    textAlign: "center",
-                                    fontSize: 25,
-                                }}
-                            >
-                                Bảng xếp hạng
-                            </Text>
-                        </View>
-                        <View
-                            style={{
                                 display: "flex",
                                 flexDirection: "row",
                                 alignItems: "center",

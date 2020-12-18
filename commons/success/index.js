@@ -17,6 +17,7 @@ const styles = StyleSheet.create({
         borderColor: "seagreen",
         backgroundColor: "#fff",
         borderRadius: 10,
+        marginTop: 15,
     },
     successTitle: {
         color: "#fff",

@@ -13,14 +13,15 @@ const styles = StyleSheet.create({
         padding: 10,
         borderWidth: 3,
         borderColor: "#EA2027",
-        backgroundColor: "#fff",
+        backgroundColor: "#EA202750",
         borderRadius: 10,
+        marginTop: 15,
         width: "80%",
     },
     errorTitle: {
         fontSize: 18,
         textAlign: "center",
-        color: "#EA2027",
+        color: "#ffffff",
     },
 });
 export default Error;

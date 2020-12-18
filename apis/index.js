@@ -32,10 +32,17 @@ export const APIgetProfile = async (accessToken) => {
     const res = await AuthGet({ url, accessToken });
     return res;
 };
-
-export const APIgetListUserReport = async () => {
-    const url = API_REPORT_MOCK;
-    const res = await Get({ url });
+export const APIuserReportQuestion = async (idQuestion, accessToken) => {
+    const url = `${API}/reports`;
+    const data = JSON.stringify({
+        questionId: idQuestion,
+    });
+    const res = await AuthPost({ url, data, accessToken });
+    return res;
+};
+export const APIgetListUserReport = async (accessToken) => {
+    const url = `${API}/reports`;
+    const res = await AuthGet({ url, accessToken });
     return res;
 };
 export const APIfetchAllQuestionsInClass = async (className, accessToken) => {
@@ -78,20 +85,6 @@ export const APIupdateRankUser = async (score, className, accessToken) => {
 
 export const APIpostRankUser = async (data) => {
     const url = API;
-    const res = await Post({ url, data });
-    return res;
-};
-export const APIuserReportQuestion = async (
-    idQuestion,
-    className,
-    fullName
-) => {
-    const url = API_REPORT_MOCK;
-    const data = JSON.stringify({
-        fullName: fullName,
-        className: className,
-        idQuestion: idQuestion,
-    });
     const res = await Post({ url, data });
     return res;
 };

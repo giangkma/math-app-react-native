@@ -129,12 +129,12 @@ const StartExample = ({
             }
         }
     };
-    React.useEffect(() => {
-        showAlert(
-            "Nếu bạn nhận thấy đáp án của chúng tôi không chính xác ! Hãy bấm 'Báo cáo' để chúng tôi có thể xem xét và sửa câu hỏi đó",
-            "Lưu ý ❗"
-        );
-    }, []);
+    // React.useEffect(() => {
+    //     showAlert(
+    //         "Nếu bạn nhận thấy đáp án của chúng tôi không chính xác ! Hãy bấm 'Báo cáo' để chúng tôi có thể xem xét và sửa câu hỏi đó",
+    //         "Lưu ý ❗"
+    //     );
+    // }, []);
     return (
         <View style={{ position: "relative", height: "100%" }}>
             <View
@@ -165,7 +165,7 @@ const StartExample = ({
                 </View>
             </View>
             <ScrollView>
-                <View
+                {/* <View
                     style={{
                         padding: 5,
                         display: "flex",
@@ -182,31 +182,22 @@ const StartExample = ({
                         buttonStyle={{ height: 35 }}
                         title="Báo cáo"
                     />
-                </View>
+                </View> */}
                 <View
                     style={{
                         display: "flex",
                         height: "100%",
                         alignItems: "center",
-                        marginTop: 20,
+                        marginTop: 40,
                         marginBottom: 80,
                         justifyContent: "flex-start",
+                        marginLeft: 20,
+                        marginRight: 20,
                     }}
                 >
                     <View style={styles.countAnswer}>
                         <Text style={{ color: "#fff", fontSize: 24 }}>
                             {`Câu ${count}`}
-                        </Text>
-                    </View>
-                    <View style={styles.titleAnswer}>
-                        <Text
-                            style={{
-                                color: "#fff",
-                                fontSize: 20,
-                            }}
-                        >
-                            {`Đề bài : `}
-                            {question.question}
                         </Text>
                     </View>
                     {isAnsweredQuestion ? ( // nếu đã submit sẽ hiển thị thông báo
@@ -219,6 +210,24 @@ const StartExample = ({
                             <Success message="Rất tốt !" />
                         )
                     ) : null}
+                    <View
+                        style={{
+                            width: "100%",
+                            marginTop: 30,
+                            marginBottom: 10,
+                        }}
+                    >
+                        <Text
+                            style={{
+                                color: "#fff",
+                                fontSize: 22,
+                            }}
+                        >
+                            {`📜 Đề bài : `}
+                            {question.question}
+                        </Text>
+                    </View>
+
                     <View style={styles.rowAnswer}>
                         {buttonsAnswer.map((button, index) => {
                             const answerItem = arrayAnswer[index];
@@ -247,8 +256,6 @@ const StartExample = ({
                                                     : null,
                                             height: 50,
                                             marginTop: 10,
-                                            marginLeft: 20,
-                                            marginRight: 20,
                                             borderRadius: 10,
                                             display: "flex",
                                             flexDirection: "row",
@@ -392,13 +399,13 @@ const DoingComponent = ({
 };
 const styles = StyleSheet.create({
     countAnswer: {
-        backgroundColor: "rgb(201, 152, 46)",
+        backgroundColor: "#218c7470",
         padding: 6,
         paddingLeft: 30,
         paddingRight: 30,
         borderWidth: 5,
         borderRadius: 10,
-        borderColor: "#ffdf86",
+        borderColor: DEFAULT_COLOR,
     },
     titleAnswer: {
         backgroundColor: "#6D214F",

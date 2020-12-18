@@ -52,10 +52,14 @@ const DoingContainer = ({ navigation, route }) => {
     const [count, setCount] = React.useState(1);
     const [answer, setAnswer] = React.useState(null);
     const [question, setQuestion] = React.useState(null);
+
     const randomQuestion = () => {
         const number = Math.floor(Math.random() * questions.length);
         const item = questions[number];
-        const newArr = JSON.parse(item.arrayAnswer);
+        const newArr =
+            typeof item.arrayAnswer === "string"
+                ? JSON.parse(item.arrayAnswer)
+                : item.arrayAnswer;
         item.arrayAnswer = shuffleArray(newArr);
         setQuestion(item);
     };
@@ -103,7 +107,7 @@ const DoingContainer = ({ navigation, route }) => {
     };
 
     const onUserReportQuestion = async (idQuestion) => {
-        await onUserReportQuestionThunk(idQuestion, className, user);
+        await onUserReportQuestionThunk(idQuestion);
         onNextQuestion();
     };
 

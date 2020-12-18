@@ -59,15 +59,6 @@ const SupportComponent = ({ colors, navigation, reports }) => {
                                 <Text
                                     style={{
                                         ...styles.titleTable,
-                                        flex: 1,
-                                        color: colors.text,
-                                    }}
-                                >
-                                    ID
-                                </Text>
-                                <Text
-                                    style={{
-                                        ...styles.titleTable,
                                         ...styles.titleName,
                                         color: colors.text,
                                     }}
@@ -77,19 +68,12 @@ const SupportComponent = ({ colors, navigation, reports }) => {
                                 <Text
                                     style={{
                                         ...styles.titleTable,
+                                        flex: 2,
                                         color: colors.text,
                                     }}
                                 >
-                                    Lớp
+                                    Tùy chọn
                                 </Text>
-
-                                <Text
-                                    style={{
-                                        ...styles.titleTable,
-                                        flex: 1,
-                                        color: colors.text,
-                                    }}
-                                />
                             </View>
                             {reports.length === 0 ? (
                                 <View
@@ -131,33 +115,15 @@ const SupportComponent = ({ colors, navigation, reports }) => {
                                                 <Text
                                                     style={{
                                                         ...styles.titleTable,
-                                                        color: colors.text,
-                                                        flex: 1,
-                                                    }}
-                                                >
-                                                    {item.idQuestion}
-                                                </Text>
-                                                <Text
-                                                    style={{
-                                                        ...styles.titleTable,
                                                         ...styles.titleName,
                                                         color: colors.text,
                                                     }}
                                                 >
-                                                    {`${item.countUserReport} người`}
+                                                    {`${item.total} người`}
                                                 </Text>
-                                                <Text
-                                                    style={{
-                                                        ...styles.titleTable,
-                                                        color: colors.text,
-                                                    }}
-                                                >
-                                                    {item.className}
-                                                </Text>
-
                                                 <TouchableRipple
                                                     style={{
-                                                        flex: 1,
+                                                        flex: 2,
                                                         backgroundColor: DEFAULT_COLOR,
                                                         paddingTop: 8,
                                                         paddingBottom: 8,
@@ -170,7 +136,7 @@ const SupportComponent = ({ colors, navigation, reports }) => {
                                                             textAlign: "center",
                                                         }}
                                                     >
-                                                        Xong
+                                                        Xem chi tiết
                                                     </Text>
                                                 </TouchableRipple>
                                             </View>
@@ -202,6 +168,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
         marginTop: 15,
+        marginLeft: 10,
+        marginRight: 10,
     },
     imageContainer: {
         bottom: 0,
