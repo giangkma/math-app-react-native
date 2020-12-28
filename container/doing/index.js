@@ -1,4 +1,6 @@
 import * as React from "react";
+import { Text } from "react-native";
+import { View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import {
     fetchQuestionsThunk,
@@ -7,11 +9,19 @@ import {
 } from "../../redux/thunk";
 import DoingComponent from "../../screens/doing";
 import { showToastAndroid, shuffleArray } from "../../untils/functions";
+import * as Animatable from "react-native-animatable";
+import { Image } from "react-native";
+import BackgroundButtonOptions from "../../assets/doing.png";
+import ButtonComponent from "../../commons/button";
+import { DEFAULT_COLOR } from "../../untils/constants";
+import { useTheme } from "@react-navigation/native";
+import { commonStyles } from "../../untils/styles/global";
 
 // connect redux
 const useConnect = () => {
     const mapState = {
         user: useSelector((state) => state.user),
+        role: useSelector((state) => state.role),
         questions: useSelector((state) => state.questions),
     };
     const dispatch = useDispatch();
@@ -39,7 +49,7 @@ const DoingContainer = ({ navigation, route }) => {
         questions,
         onFetchQuestionsThunk,
         onUserReportQuestionThunk,
-        user,
+        role,
     } = useConnect();
     const [isShowModalResult, setIsShowModalResult] = React.useState(false);
 
@@ -120,7 +130,67 @@ const DoingContainer = ({ navigation, route }) => {
             }
         })();
     }, [className]);
+    const { colors } = useTheme();
 
+    if (role === "admin") {
+        return (
+            <Animatable.View animation="slideInUp" easing="ease-out">
+                <View>
+                    <View
+                        style={{
+                            marginBottom: 100,
+                            paddingLeft: 10,
+                            paddingRight: 10,
+                            display: "flex",
+                            alignItems: "center",
+                        }}
+                    >
+                        <Image
+                            source={BackgroundButtonOptions}
+                            style={{
+                                width: 300,
+                                height: 300,
+                            }}
+                        />
+                        <View style={{ marginTop: -40 }}>
+                            <Text
+                                style={{
+                                    color: colors.text,
+                                    fontSize: 30,
+                                    textAlign: "center",
+                                }}
+                            >
+                                {`Toán học lớp ${className}`}
+                            </Text>
+                            <Text
+                                style={{
+                                    color: colors.text,
+                                    fontSize: 18,
+                                    textAlign: "center",
+                                    marginTop: 10,
+                                }}
+                            >
+                                {`Số lượng câu hỏi lớp ${className} đang có : ${questions.length}`}
+                            </Text>
+                        </View>
+                        <View>
+                            {questions.length === 0 && (
+                                <ButtonComponent
+                                    title="Thêm câu hỏi"
+                                    onPress={() => navigation.navigate("Question")}
+                                    buttonStyle={{
+                                        ...commonStyles.buttonSubmit,
+                                        marginTop: 15,
+                                    }}
+                                    titleStyle={{ fontSize: 16 }}
+                                />
+                            )}
+                        </View>
+                    </View>
+                </View>
+            </Animatable.View>
+        );
+    }
     return (
         <DoingComponent
             numQuestions={questions.length}

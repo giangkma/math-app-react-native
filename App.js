@@ -11,7 +11,7 @@ import HomeStackScreen from "./rootScreens/home";
 import AuthStackScreen from "./rootScreens/auth";
 import { DEFAULT_COLOR } from "./untils/constants";
 
-const Drawer = createDrawerNavigator();
+const StackScreen = createDrawerNavigator();
 // connect redux
 const useConnect = () => {
     const mapState = {
@@ -33,21 +33,21 @@ const App = () => {
                     backgroundColor={theme.dark ? "#1e272e" : DEFAULT_COLOR}
                     barStyle="light-content"
                 />
-                <Drawer.Navigator
+                <StackScreen.Navigator
                     drawerContent={(props) => <DrawerContent {...props} />}
                 >
                     {!accessToken ? (
-                        <Drawer.Screen
+                        <StackScreen.Screen
                             name="Auth"
                             component={AuthStackScreen}
                         />
                     ) : (
-                        <Drawer.Screen
+                        <StackScreen.Screen
                             name="HomePage"
                             component={HomeStackScreen}
                         />
                     )}
-                </Drawer.Navigator>
+                </StackScreen.Navigator>
                 <Loading />
             </NavigationContainer>
         </PaperProvider>

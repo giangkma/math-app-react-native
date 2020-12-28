@@ -31,7 +31,7 @@ export const loginThunk = (username, password) => {
         const res = await APIlogin(username, password);
         const { status, data } = res;
         if (status === STATUS_CODE.SUCCESS) {
-            if (username === "admin") {
+            if (username === "giaovien") {
                 dispatch(actionSetRole("admin"));
             } else {
                 dispatch(actionSetRole("user"));

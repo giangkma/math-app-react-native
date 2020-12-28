@@ -5,6 +5,7 @@
     "name": "MyReactNative",
     "slug": "MyReactNative",
     "version": "1.0.0",
+    "sdkVersion": "37.0.0",
     "assetBundlePatterns": [
       "**/*"
     ]

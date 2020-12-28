@@ -151,7 +151,9 @@ const StartExample = ({
                 <Button
                     buttonStyle={{
                         ...commonStyles.buttonSubmit,
-                        backgroundColor: "#EA2027",
+                        backgroundColor: 'transparent',
+                        borderWidth: 3,
+                        borderColor: 'gray',
                         borderRadius: 5,
                     }}
                     titleStyle={{ fontSize: 16 }}

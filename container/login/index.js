@@ -33,7 +33,7 @@ const LoginContainer = ({ navigation }) => {
     });
 
     const { colors } = useTheme();
-    const { onLoginThunk, accessToken } = useConnect();
+    const { onLoginThunk } = useConnect();
     const [isShowPassword, setIsShowPassword] = React.useState(false);
 
     const handleShowPassword = () => {

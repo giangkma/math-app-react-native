@@ -19,21 +19,12 @@ const RankComponent = ({ ranksInClass, nameClassRanks, selectClassRanks }) => {
             >
                 <View style={commonStyles.ContainerContent}>
                     <ScrollView
-                        style={{}}
                         contentContainerStyle={{
                             paddingBottom: 30,
                         }}
                     >
                         <View
-                            style={{
-                                display: "flex",
-                                flexDirection: "row",
-                                alignItems: "center",
-                                marginTop: 10,
-                                marginBottom: 5,
-                                paddingLeft: 20,
-                                paddingRight: 20,
-                            }}
+                            style={styles.containerRanks}
                         >
                             <View style={{ marginRight: 10 }}>
                                 <Text
@@ -43,13 +34,8 @@ const RankComponent = ({ ranksInClass, nameClassRanks, selectClassRanks }) => {
                                 </Text>
                             </View>
                             <View
-                                style={{
-                                    borderColor: colors.borderInputColor,
-                                    borderWidth: 2,
-                                    marginTop: 10,
-                                    marginBottom: 10,
-                                    flex: 1,
-                                }}
+                                style={{...styles.selectClassRanks, 
+                                    borderColor: colors.borderInputColor}}
                             >
                                 <Picker
                                     style={{
@@ -62,10 +48,6 @@ const RankComponent = ({ ranksInClass, nameClassRanks, selectClassRanks }) => {
                                         selectClassRanks(itemValue)
                                     }
                                 >
-                                    {/* <Picker.Item
-                                        label="Xếp hạng tổng hợp"
-                                        value={0}
-                                    /> */}
                                     <Picker.Item label="Lớp 1" value={1} />
                                     <Picker.Item label="Lớp 2" value={2} />
                                     <Picker.Item label="Lớp 3" value={3} />
@@ -229,6 +211,21 @@ const styles = StyleSheet.create({
         fontSize: 18,
         flex: 1,
         textAlign: "center",
+    },
+    containerRanks : {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        marginTop: 10,
+        marginBottom: 5,
+        paddingLeft: 20,
+        paddingRight: 20,
+    },
+    selectClassRanks: {
+        borderWidth: 2,
+        marginTop: 10,
+        marginBottom: 10,
+        flex: 1,
     },
     titleName: {
         flex: 3,

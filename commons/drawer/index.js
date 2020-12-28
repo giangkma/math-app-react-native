@@ -63,7 +63,7 @@ export function DrawerContent(props) {
                                 </Title>
                                 {role === "admin" && (
                                     <Caption style={styles.caption}>
-                                        👋Chào mừng admin !
+                                        👋Chào mừng Giáo viên !
                                     </Caption>
                                 )}
                             </View>
