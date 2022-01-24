@@ -10,7 +10,7 @@ import { DrawerContent } from "./commons/drawer";
 import HomeStackScreen from "./rootScreens/home";
 import AuthStackScreen from "./rootScreens/auth";
 import { DEFAULT_COLOR } from "./untils/constants";
-s
+ss
 const StackScreen = createDrawerNavigator();
 // connect redux
 const useConnect = () => {
