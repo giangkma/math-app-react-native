@@ -1,5 +1,5 @@
 module.exports = {
-    env: {d
+    env: {dd
         browser: true,
         es2021: true,
     },
