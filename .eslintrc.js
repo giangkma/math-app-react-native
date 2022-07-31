@@ -1,4 +1,4 @@
-module.exports = {fd
+module.exports = {fdf
     env: {
         browser: true,
         es2021: true,
